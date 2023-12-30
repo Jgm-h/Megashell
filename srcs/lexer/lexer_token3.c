@@ -19,30 +19,6 @@ int	ft_redirlen(char *redir)
 	return (i);
 }
 
-T_BOOL	check_pipe_position(char *input)
-{
-	int	i;
-
-	i = 0;
-	while (input[i] && input[i] == ' ')
-		i++;
-	if (!input[i] || input[i] == '|')
-		return (FALSE);
-	while (input[i++])
-	{
-		if (!check_double(input, i, 0, 0) && input[i] == '|')
-		{
-			while (input[i] && input[i] == ' ')
-				i++;
-			if (input[i] == '|' && !input[i + 1])
-				return (FALSE);
-		}
-		else if (input[i] == '|' && !input[i + 1])
-			return (FALSE);
-	}
-	return (TRUE);
-}
-
 T_BOOL	check_heredoc_start(char *input)
 {
 	int	i;

@@ -99,28 +99,15 @@ T_BOOL	redir_clean(char **input, int i, int k, int j)
 	return (TRUE);
 }
 
-/*a lexer in minishell has to do the following:
- * give back the command line if no input
- * print a \n and give back the command line if there are unclosed quotes, \ or ;
- * handle ' by not interpreting anything
- * handle " by interpreting only env variables preceded by a $
- * handle $ followed by env variables
- * handle $? by expanding it to the exit_status
- * */
 T_BOOL	lexer(char **input)
 {
 	if (!check_empty_prompt(*input))
 		return (FALSE);
 	if (!check_closed_quotes(*input, 0, 0))
 		return (FALSE);
-	if (!check_pipe_position(*input))
-	{
-		my_print_error("syntax error near unexpected token `|'\n");
-		return (FALSE);
-	}
 	if (!check_heredoc_alone(*input, 0, FALSE))
 		return (FALSE);
 	space_redir_clean(input);
-	lexer_redir_clean(input); //TODO: clean where the redir is moved to
+	lexer_redir_clean(input);
 	return (TRUE);
 }

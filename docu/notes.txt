@@ -2,6 +2,7 @@ Minishell
  - [x] free_all
 
 Lexer
+ - [x] sortir la gestion d'erreur du lexer
  - [x] Not interpret unclosed quotes
  - [x] Not interpret special characters which are not required by the subject such as\(backslash) or;(semicolon).
  - [x] Handle ’ (single quote) which should prevent the shell from interpreting the meta-characters in the quoted sequence.
@@ -27,8 +28,9 @@ Executeur
         - [x] if heredoc abort stop the execution (probleme for ||)
         - [x] clean the heredoc generation
  - [x] expand wildcards
- - [ ] Implement pipes:
-    - [ ] i should wait for groups and cmds
+ - [x] Implement pipes:
+    - [x] i should wait for groups and cmds
+    - [x] set between cmds
  - [x] builtins:
     - [ ] which should execute in child or not
     - [x] if tree
@@ -54,6 +56,7 @@ g_status
  - [x] handle in heredoc status
  - [x] clean the ^ notations
  - [x] handle in execution and new_line
+ - [ ] subshell
 signal,sigaction, sigemptyset, sigadd
 
 

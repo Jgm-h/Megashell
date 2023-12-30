@@ -13,7 +13,7 @@ char	**get_env_paths(char **envp)
 	paths = ft_split(envp[i] + 5, ':');
 	i = -1;
 	while (paths[++i])
-		paths[i] = ft_strjoin(paths[i], "/");
+		paths[i] = ft_strjoin(paths[i], ft_strdup("/"));
 	return (paths);
 }
 
@@ -29,58 +29,54 @@ char	*find_path(t_container *book, int i, char *arg)
 		return (NULL);
 	while (env_paths[++i])
 	{
-		pathed = ft_strjoin(ft_strdup(env_paths[i]), arg);
+		pathed = ft_strjoin(ft_strdup(env_paths[i]), ft_strdup(arg));
 		if (!pathed)
 			return (NULL);
 		if (!access(pathed, F_OK))
 		{
-			free_split(env_paths); //check que j'ai pas deja tout free
+			free_split(env_paths);
 			return (pathed);
 		}
 	}
 	return (NULL);
 }
 
-void	child(int *pipes, t_token *leaf, t_pipes pipes_exec, t_container *book)
+void	child(int *pipes_here, t_token *leaf, t_pipes pipes, t_container *book)
 {
-	if (dup2(pipes_exec.in, STDIN_FILENO) == -1 \
-	|| dup2(pipes_exec.out, STDOUT_FILENO) == -1)
+	if (dup2(STDIN_FILENO, pipes.in) == -1)
 		return ;
-	close(pipes_exec.in);
-	close(pipes_exec.out);
-	if (leaf->heredoc && !pipes_exec.in)
+	if (dup2(STDOUT_FILENO, pipes.out) == -1)
+		return ;
+	close(STDIN_FILENO);
+	if (book->eof_sig && !pipes.in)
 	{
-		dup2(pipes[0], STDIN_FILENO);
-		close(pipes[0]);
-		close(pipes[1]);
+		dup2(pipes_here[0], STDIN_FILENO);
+		close(pipes_here[0]);
+		close(pipes_here[1]);
 	}
 	execve(leaf->args[0], leaf->args, book->envp);
 	my_print_error("minishell: execution failed");
 }
 
-/*TODO:
- * 	- [ ] check how heredoc and STDIN interact
- * */
-int	execute(t_token *leaf, t_container *book, t_pipes pipes_exec)
+void execute(t_token *leaf, t_container *book, t_pipes pipes)
 {
-	int		pipes[2];
+	int		pipes_here[2];
 
-	if (leaf->heredoc)
+	if (book->eof_sig)
 	{
-		if (pipe(pipes) == -1)
+		if (pipe(pipes_here) == -1)
 			my_perror("pipe", book);
 	}
 	if (fork1() == 0)
 	{
-		if (leaf->heredoc)
-			dup2(pipes[1], STDIN_FILENO);
+		if (book->eof_sig)
+			dup2(pipes_here[1], STDIN_FILENO);
 		if (check_builtin(leaf->args[0]))
-			execute_builtins(leaf, book, pipes_exec);
-		child(pipes, leaf, pipes_exec, book);
+			execute_builtins(leaf, book, pipes);
+		child(pipes_here, leaf, pipes, book);
 	}
-	dup2(pipe[1], STDOUT_FILENO);
-	if (leaf->heredoc)
-		manage_heredoc(leaf, pipes);
+	if (book->eof_sig)
+		manage_heredoc(book);
 }
 
 int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
@@ -101,5 +97,11 @@ int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
 	}
 	free(leaf->args[0]);
 	leaf->args[0] = path;
-	return (execute(leaf, book, pipes));
+	execute(leaf, book, pipes);
+	if (pipes.in != 0)
+		close(pipes.in);
+	if (pipes.out != 1)
+		close(pipes.out);
+	book->nmbr_exec++;
+	return (SUCCESS);
 }

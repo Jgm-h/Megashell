@@ -1,4 +1,5 @@
 #include "minishell.h"
+volatile extern int	g_status;
 
 void	replace_path(t_token *leaf, char *pwd)
 {
@@ -126,16 +127,29 @@ int	fork1(void)
 	return (pid);
 }
 
-void	manage_heredoc(t_token *token, int *pipes)
+void manage_heredoc(t_container *book)
 {
-	int	i;
+	char	*input;
 
-	if (!token->heredoc)
+	if (!book->eof_sig)
 		return ;
-	i = ft_strlen(token->heredoc);
-	write(pipes[0], token->heredoc, i);
-	close(pipes[1]);
-	close(pipes[0]);
+	g_status = HEREDOC;
+	while (g_status == HEREDOC)
+	{
+		input = readline("> ");
+		if (!input)
+			continue ;
+		if (ft_strncmp(input, book->eof, ft_strlen(book->eof) + 1))
+			continue ;
+		write(book->pipe_here[1], input, ft_strlen(input));
+	}
+	if (g_status == HEREDOC)
+		g_status = EXECUTION;
+	if (g_status == ABORT_HEREDOC)
+		errno = 1;
+	close(book->pipe_here[1]);
+	close(book->pipe_here[0]);
+	book->eof_sig = FALSE;
 }
 
 T_BOOL	check_builtin(char *str)
@@ -159,7 +173,9 @@ T_BOOL	check_builtin(char *str)
 
 int my_print_error(char *str)
 {
-	write(2, str, ft_strlen(str));
+	perror(str);
+//	write(2, str, ft_strlen(str));
+//	write(2, "\n", 1);
 	return (0);
 }
 

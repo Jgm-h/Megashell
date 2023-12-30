@@ -1,6 +1,14 @@
 #include "minishell.h"
 #include "init.h"
 
+void init_nmbrs(t_container **book)
+{
+	(*book)->eof_sig = FALSE;
+	(*book)->exit_status = 0;
+	(*book)->in_pipe = FALSE;
+	(*book)->nmbr_exec = 0;
+}
+
 unsigned int init(t_container **book, char **envp, int argc)
 {
 	if (argc != 1)
@@ -21,6 +29,7 @@ unsigned int init(t_container **book, char **envp, int argc)
 	if (!(*book)->prompt)
 		return (my_print_error("minishell-2.0: malloc error"));
 	init_termios();
+	init_nmbrs(book);
 	return (1);
 }
 

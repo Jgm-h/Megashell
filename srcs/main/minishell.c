@@ -23,12 +23,11 @@ int	minishell(t_container *book)
 			continue ;
 		if (!lexer(&input))
 			continue ;
-		printf("%s", input);
 		book->head = parser(input);
 		lexer_token(book->head, book);
 		free(input);
-//		if (!exec(book))
-//			book->exit_status = errno;
+		exec(book);
+		free_leaf(book->head);
 	}
 	free_all(book);
 	return (1);

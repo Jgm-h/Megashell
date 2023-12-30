@@ -8,11 +8,6 @@ void	free_leaf(t_token *leaf)
 	free_leaf(leaf->right);
 	if (leaf->args)
 		free_array(leaf->args);
-	if (leaf->heredoc)
-	{
-		leaf->heredoc = NULL;
-		free(leaf->heredoc);
-	}
 	if (leaf->argv)
 	{
 		leaf->argv = NULL;
