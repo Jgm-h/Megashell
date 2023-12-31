@@ -231,6 +231,8 @@ int get_small_size(char *str)
 	(str[size] == '\'') || (str[size] == '"')))
 			size++;
 	}
+	if (!str[size])
+		return (size - 1);
 	return (size);
 }
 
@@ -262,7 +264,10 @@ int	ft_small_split(char *str, char **to_copy, int size, int ign)
 	doub = FALSE;
 	size = get_small_size(str);
 	if (*str == ' ')
+	{
 		str++;
+		ign++;
+	}
 	(*to_copy) = ft_calloc(size + 1, sizeof(char));
 	size = 0;
 	if (*str == '\'' || *str == '"')
@@ -300,9 +305,13 @@ void	split_var(char *input, t_token *leaf)
 		i += ft_small_split(&input[i], &(leaf->args[j]), 0, 0);
 		j++;
 	}
+	if (!leaf->args[j - 2][1] && !leaf->args[j - 1][1] && (leaf->args[j - 2][0] == leaf->args[j - 1][0]))
+	{
+		free (leaf->args[j - 1]);
+		leaf->args[j - 1] = NULL;
+	}
 }
-/* check recursively for each token with type COMMAND
- * */
+
 T_BOOL	lexer_token(t_token *leaf, t_container *book)
 {
 	int	i;
@@ -313,7 +322,7 @@ T_BOOL	lexer_token(t_token *leaf, t_container *book)
 	if (leaf->type != COMMAND)
 		return (lexer_token(leaf->left, book) && \
 				lexer_token(leaf->right, book));
-	if (leaf->type == COMMAND)
+	if (leaf->type == COMMAND || leaf->type == IN_REDIR || leaf->type == OUT_REDIR || leaf->type == HEREDOC || leaf->type == APD_REDIR)
 	{
 		split_var(leaf->argv, leaf);
 		while (leaf->args[i])

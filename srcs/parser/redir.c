@@ -1,9 +1,16 @@
 #include "minishell.h"
 #include "parser.h"
 
-/*TODO:
- * 	- [ ] match type for redir type (ft_strncmp)
- * */
+void cpy(char *a, char *b)
+{
+	while (*b) {
+		*a = *b;
+		b++;
+		a++;
+	}
+	*a = 0;
+}
+
 t_token	*get_redir(char *prompt, int i, char *redire_type)
 {
 	t_token	*res;
@@ -16,13 +23,16 @@ t_token	*get_redir(char *prompt, int i, char *redire_type)
 		j++;
 	start = j;
 	while (prompt[j] && !iswhitespace(prompt[j]))
+	{
+		j = skip_quotes(prompt, j);
 		j++;
+	}
 	ret = ft_calloc(j - start + 1, sizeof (char));
-	ft_strlcpy(ret, &prompt[start], j - start);
+	ft_strlcpy(ret, &prompt[start], j - start + 1);
 	res = ft_calloc(1, sizeof(t_token));
 	res->type = IN_REDIR;
 	res->argv = ret;
-	ft_strlcpy(&prompt[i], &prompt[j], ft_strlen(&prompt[j]));
+	cpy(&prompt[i], &prompt[j]);
 	return (res);
 }
 
@@ -31,26 +41,30 @@ t_token	*redir(char *prompt)
 	t_token 	*res;
 	t_token 	*tmp;
 	t_token 	*tmp2;
+	int			j;
 	int			i;
 	static char	*strings[] = { "<<", ">>", ">", "<" };
 
 	res = 0;
 	i = -1;
+	tmp = 0;
 	while (prompt[++i])
 	{
 		if (prompt[i] ==  '"' || prompt[i] == '\'')
 			i = skip_quotes(prompt, i);
-		while (++i < 4)
+		j = -1;
+		while (++j < 4)
 		{
-			if (ft_strncmp(&prompt[i], strings[i], strlen(strings[i])) == 0)
+			if (ft_strncmp(&prompt[i], strings[j], strlen(strings[j])) == 0)
 			{
-				tmp2 = get_redir(prompt, i, strings[i]);
+				tmp2 = get_redir(prompt, i, strings[j]);
 				if (res == 0)
 					res = tmp2;
-				if (tmp)
+				if (tmp) {
 					tmp->right = tmp2;
-				else
-					tmp  = tmp2;
+					tmp = tmp2;
+				} else
+					tmp = tmp2;
 			}
 		}
 	}

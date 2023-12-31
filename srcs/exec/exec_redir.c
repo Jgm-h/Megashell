@@ -23,18 +23,9 @@ int	get_redir_fd_side(char *file, enum e_token_type type)
 	return (fd);
 }
 
-
-char	*get_eof(t_token *leaf)
+T_BOOL	get_heredoc(t_token *leaf, t_container *book)
 {
-	if (leaf->right->type == COMMAND)
-		return (leaf->right->argv);
-	return (leaf->right->left->argv);
-}
-
-T_BOOL	get_heredoc(t_token *leaf, t_pipes pipes, t_container *book)
-{
-	(void) pipes;
-	book->eof = get_eof(leaf);
+	book->eof = leaf->argv;
 	book->eof_sig = TRUE;
 	pipe(book->pipe_here);
 	return (TRUE);
@@ -51,7 +42,7 @@ unsigned int	one_redir(t_token *leaf, char *file, t_pipes pipes, t_container *bo
 			return (FALSE);
 	}
 	else
-		return (get_heredoc(leaf, pipes, book));
+		return (get_heredoc(leaf, book));
 	if (leaf->type == OUT_REDIR || leaf->type == APD_REDIR)
 	{
 		if (my_dup2(fd_file, pipes.out) == -1)
@@ -68,24 +59,10 @@ unsigned int	one_redir(t_token *leaf, char *file, t_pipes pipes, t_container *bo
 
 T_BOOL	redir_management(t_token *leaf, t_pipes pipes, t_container *book)
 {
-	if (leaf->right->type == COMMAND)
-	{
-		if (!one_redir(leaf, leaf->right->argv, pipes, book))
-			return (FALSE);
-		leaf = leaf->right;
-	}
 	while (leaf && leaf->type != COMMAND)
 	{
-		if (leaf->right->type == COMMAND)
-		{
-			if (!one_redir(leaf, leaf->right->argv, pipes, book))
-				return (FALSE);
-		}
-		else
-		{
-			if (!one_redir(leaf, leaf->right->left->argv, pipes, book))
-				return (FALSE);
-		}
+		if (!one_redir(leaf, leaf->argv, pipes, book))
+			return (FALSE);
 		leaf = leaf->right;
 	}
 	return (TRUE);
@@ -96,10 +73,10 @@ T_BOOL	execute_redir(t_token *leaf, t_container *book, t_pipes pipes)
 	if (!redir_management(leaf, pipes, book))
 	{
 		book->exit_status = errno;
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(leaf->argv, STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory", STDERR_FILENO);
 		return (FALSE);
 	}
-	book->exit_status = exec_one_cmd(leaf->left, book, pipes);
-	if (!book->exit_status)
-		return (TRUE);
-	return (FALSE);
+	return (TRUE);
 }

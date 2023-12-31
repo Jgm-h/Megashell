@@ -73,9 +73,11 @@ signal,sigaction, sigemptyset, sigadd
 
 Eval:
 - [ ] redir lmao
-- [ ] cd .. check for double frees
-- [ ] if path unset segfault
-- [ ] giga segfault du echo echo "$USER" haihfieu h ihaerough aoueh osiuh oiauw h
+- [x] cd .. check for double frees
+    - [x] check absolute path
+    - [x] oldpwd works
+- [x] if path unset segfault
+- [x] giga segfault du echo "$USER"  h ihaerough aoueh osiuh oiauw h
 
 
 

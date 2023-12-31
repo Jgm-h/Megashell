@@ -48,19 +48,15 @@ void	add_var(t_container *book, char *key, char *value)
 	free(old_envp);
 }
 
-void	export_value(char *env, char *key, char *value)
+void	export_value(char **env, char *key, char *value)
 {
 	char	*hook;
 
-	hook = env;
-	env = ft_calloc(ft_strlen(key) + ft_strlen(value) + 1, sizeof(char));
+	hook = (*env);
+	(*env) = ft_strjoin(key, value);
 	if (!env)
 		ft_putstr_fd("malloc error", 2);
 	free(hook);
-	ft_strlcpy(env, key, ft_strlen(key) + 1);
-	ft_strlcpy(env + ft_strlen(key), value, ft_strlen(value) + 1);
-	free(key);
-	free(value);
 }
 
 int	get_index_env(char **envp, char *key)

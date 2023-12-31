@@ -53,7 +53,8 @@ char	*trim_space(char *prompt)
 int skip_quotes(char *prompt, int i)
 {
 	char	c;
-
+	if (prompt[i] !=  '"' && prompt[i] != '\'')
+		return (i);
 	c = prompt[i];
 	while (prompt[++i] && prompt[i] != c)
 		;
@@ -73,8 +74,7 @@ int	find_level(char *prompt, int level)
 	parenthese_level = 0;
 	while (prompt[++i])
 	{
-		if (prompt[i] ==  '"' || prompt[i] == '\'')
-			i = skip_quotes(prompt, i);
+		i = skip_quotes(prompt, i);
 		parenthese_level += (prompt[i] == '(') - (prompt[i] == ')');
 		if (parenthese_level != 0
 			|| ft_strncmp(&prompt[i], strings[level], len))
@@ -142,8 +142,8 @@ t_token	*parser(char *prompt)
 		if (prompt[0] == '(')
 			return (parser(parenthese_trim(prompt)));
 		res->type = COMMAND;
-		res->argv = strdup(prompt);
 		res->right = redir(prompt);
+		res->argv = strdup(prompt);
 		return (res);
 	}
 	res->type = i - 1;

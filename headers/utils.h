@@ -61,7 +61,7 @@ void	my_perror(char *str, t_container *book);
 void manage_heredoc(t_container *book);
 int		my_dup2(int fd_file, int to_dup);
 T_BOOL	my_access(char *file, int flag);
-void	export_value(char *env, char *key, char *value);
+void	export_value(char **env, char *key, char *value);
 void	replace_path(t_token *leaf, char *pwd);
 
 int check_builtin(char *str);

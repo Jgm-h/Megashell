@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include "exec.h"
 
 char	**get_env_paths(char **envp)
 {
@@ -6,7 +7,7 @@ char	**get_env_paths(char **envp)
 	char	**paths;
 
 	i = 0;
-	while (ft_strncmp(envp[i], "PATH=", 5))
+	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
 		i++;
 	if (!envp[i])
 		return (NULL);
@@ -89,6 +90,8 @@ int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
 {
 	char	*path;
 
+	if (leaf->right)
+		if (!execute_redir(leaf, book, pipes))
 	if (check_builtin(leaf->args[0]) == 1)
 		execute(leaf, book, pipes);
 	else if (check_builtin(leaf->args[0]) == 2 && pipes.out == 1)

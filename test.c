@@ -13,11 +13,6 @@
 
 int main(int argc, char **argv, char **envp)
 {
-	int fd;
-
-	fd = access("1", O_WRONLY);
-	dup2(STDOUT_FILENO, fd);
-	close(fd);
-	printf("%s", "moiiiiifuyigi");
+	chdir("/Users/jmorcom-/Desktop/minishell/docu");
 	return (0);
 }
