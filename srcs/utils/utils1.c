@@ -1,4 +1,5 @@
 #include "minishell.h"
+volatile extern int	g_status;
 
 void	replace_path(t_token *leaf, char *pwd)
 {
@@ -54,7 +55,7 @@ void	export_value(char *env, char *key, char *value)
 	hook = env;
 	env = ft_calloc(ft_strlen(key) + ft_strlen(value) + 1, sizeof(char));
 	if (!env)
-		my_print_error("malloc error");
+		ft_putstr_fd("malloc error", 2);
 	free(hook);
 	ft_strlcpy(env, key, ft_strlen(key) + 1);
 	ft_strlcpy(env + ft_strlen(key), value, ft_strlen(value) + 1);
@@ -78,8 +79,8 @@ T_BOOL	my_access(char *file, int flag)
 {
 	if (access(file, flag) == -1)
 	{
-		my_print_error("minishell-2.0: permission denied: ");
-		my_print_error(file);
+		ft_putstr_fd("minishell-2.0: permission denied: ", 2);
+		ft_putstr_fd(file, 2);
 		return (FALSE);
 	}
 	else
@@ -90,18 +91,11 @@ int	my_dup2(int fd_file, int to_dup)
 {
 	if (dup2(fd_file, to_dup) == -1)
 	{
-		my_print_error("minishell-2.0: dup2 failed");
+		ft_putstr_fd("minishell-2.0: dup2 failed", 2);
 		return (-1);
 	}
 	else
 		return (1);
-}
-
-void	my_perror(char *str, t_container *book)
-{
-	my_print_error(str);
-	free_all(book);
-	exit(errno);
 }
 
 void	free_split(char **to_free)
@@ -120,46 +114,53 @@ int	fork1(void)
 	pid = fork();
 	if (pid == -1)
 	{
-		my_print_error("fork");
+		ft_putstr_fd("fork", 2);
 		exit(EXIT_FAILURE);
 	}
 	return (pid);
 }
 
-void	manage_heredoc(t_token *token, int *pipes)
+void manage_heredoc(t_container *book)
 {
-	int	i;
+	char	*input;
 
-	if (!token->heredoc)
+	if (!book->eof_sig)
 		return ;
-	i = ft_strlen(token->heredoc);
-	write(pipes[0], token->heredoc, i);
-	close(pipes[1]);
-	close(pipes[0]);
+	g_status = HEREDOC;
+	while (g_status == HEREDOC)
+	{
+		input = readline("> ");
+		if (!input)
+			continue ;
+		if (ft_strncmp(input, book->eof, ft_strlen(book->eof) + 1))
+			continue ;
+		write(book->pipe_here[1], input, ft_strlen(input));
+	}
+	if (g_status == HEREDOC)
+		g_status = EXECUTION;
+	if (g_status == ABORT_HEREDOC)
+		errno = 1;
+	close(book->pipe_here[1]);
+	close(book->pipe_here[0]);
+	book->eof_sig = FALSE;
 }
 
-T_BOOL	check_builtin(char *str)
+int check_builtin(char *str)
 {
 	if (!ft_strncmp(str, "cd", 3))
-		return (TRUE);
+		return (2);
 	if (!ft_strncmp(str, "echo", 5))
-		return (TRUE);
+		return (1);
 	if (!ft_strncmp(str, "env", 4))
-		return (TRUE);
+		return (1);
 	if (!ft_strncmp(str, "exit", 5))
-		return (TRUE);
+		return (2);
 	if (!ft_strncmp(str, "export", 7))
-		return (TRUE);
+		return (2);
 	if (!ft_strncmp(str, "pwd", 4))
-		return (TRUE);
+		return (1);
 	if (!ft_strncmp(str, "unset", 6))
-		return (TRUE);
-	return (FALSE);
-}
-
-int my_print_error(char *str)
-{
-	write(2, str, ft_strlen(str));
+		return (2);
 	return (0);
 }
 

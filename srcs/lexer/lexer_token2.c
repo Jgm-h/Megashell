@@ -19,14 +19,24 @@ unsigned int	expand(char **input, t_container *book, int i)
 unsigned int	ft_expand_exit(char **input, int i, t_container *book)
 {
 	char	*exit_status;
-	T_BOOL	status;
+	char	*reste;
+	char	*debut;
+	int		j;
 
+	j = 0;
 	exit_status = ft_itoa(book->exit_status);
 	if (!exit_status)
 		return (FALSE);
-	status = ft_strcpy_lexer(input, i, exit_status, -1);
-	free(exit_status);
-	return (status);
+	reste = ft_strdup(&(*input)[i + 2]);
+	debut = ft_calloc(i + 1, sizeof(char));
+	while (j < i)
+	{
+		debut[j] = (*input)[j];
+		j++;
+	}
+	debut = ft_strjoin(debut, exit_status);
+	(*input) = ft_strjoin(debut, reste);
+	return (TRUE);
 }
 
 unsigned int	ft_strcpy_lexer(char **input, int i, char *env, int j)
@@ -39,7 +49,7 @@ unsigned int	ft_strcpy_lexer(char **input, int i, char *env, int j)
 	(*input) = ft_calloc(ft_strlen(*input) + ft_strlen(env) \
 			- ft_keysize_input((*input) + i) + 1, sizeof (char));
 	if (!*input || !exp)
-		my_print_error("malloc");
+		ft_putstr_fd("malloc", 2);
 	while (++j < i)
 		(*input)[j] = exp[j];
 	k = -1;
@@ -67,19 +77,21 @@ T_BOOL	check_char_redir(char c)
 void	clean_quotes(char **input, T_BOOL in_double, T_BOOL in_simple, int i)
 {
 	int		j;
+	char	c;
 
 	while ((*input)[i])
 	{
 		if (((*input)[i] == '\"' && !in_simple) || \
 			((*input)[i] == '\'' && !in_double))
 		{
-			if ((*input)[i] == '\"')
-				in_double = !in_double;
-			if ((*input)[i] == '\'')
-				in_simple = !in_simple;
-			j = i - 1;
-			while (input[++j])
+			c = (*input)[i];
+			j = i;
+			while ((*input)[j] && (*input)[j + 1] != c)
+			{
 				(*input)[j] = (*input)[j + 1];
+				j++;
+			}
+			(*input)[j] = 0;
 		}
 		else
 			i++;

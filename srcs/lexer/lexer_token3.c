@@ -19,30 +19,6 @@ int	ft_redirlen(char *redir)
 	return (i);
 }
 
-T_BOOL	check_pipe_position(char *input)
-{
-	int	i;
-
-	i = 0;
-	while (input[i] && input[i] == ' ')
-		i++;
-	if (!input[i] || input[i] == '|')
-		return (FALSE);
-	while (input[i++])
-	{
-		if (!check_double(input, i, 0, 0) && input[i] == '|')
-		{
-			while (input[i] && input[i] == ' ')
-				i++;
-			if (input[i] == '|' && !input[i + 1])
-				return (FALSE);
-		}
-		else if (input[i] == '|' && !input[i + 1])
-			return (FALSE);
-	}
-	return (TRUE);
-}
-
 T_BOOL	check_heredoc_start(char *input)
 {
 	int	i;
@@ -56,12 +32,12 @@ T_BOOL	check_heredoc_start(char *input)
 			i++;
 		if (input[i] == '(')
 		{
-			my_print_error("syntax error near unexpected token `('");
+			ft_putstr_fd("syntax error near unexpected token `('", 2);
 			return (FALSE);
 		}
 		if (input[i] == ')')
 		{
-			my_print_error("syntax error near unexpected token `)'");
+			ft_putstr_fd("syntax error near unexpected token `)'", 2);
 			return (FALSE);
 		}
 		while (input[i] == ' ')
@@ -84,12 +60,12 @@ T_BOOL	check_heredoc_alone(char *input, int i, T_BOOL first)
 		{
 			if (first)
 			{
-				my_print_error("syntax error near unexpected token '<<'");
+				ft_putstr_fd("syntax error near unexpected token '<<'", 2);
 				return (FALSE);
 			}
 			if (!input[i + 2])
 			{
-				my_print_error("syntax error near unexpected token `newline'\n");
+				ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
 				return (FALSE);
 			}
 			first = TRUE;

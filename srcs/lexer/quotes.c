@@ -70,25 +70,6 @@ T_BOOL	check_state(char *input, int pos, T_BOOL in_double, T_BOOL in_simple)
 }
 
 
-T_BOOL	check_double(char *input, int pos, T_BOOL in_double, T_BOOL in_simple)
-{
-	int		i;
-
-	i = 0;
-	while (i <= pos)
-	{
-		if (input[i] == '\"' && !in_simple && !in_double)
-			in_double = TRUE;
-		else if (input[i] == '\"' && !in_simple && in_double)
-			in_double = FALSE;
-		if (input[i] == '\'' && !in_double && !in_simple)
-			in_simple = TRUE;
-		else if (input[i] == '\'' && !in_double && in_simple)
-			in_simple = FALSE;
-		i++;
-	}
-	return (in_double | in_simple);
-}
 /*CODE DE MERDE XD
  * */
 T_BOOL	check_expand(char *input, int i, t_container *book)

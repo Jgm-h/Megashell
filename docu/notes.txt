@@ -2,6 +2,7 @@ Minishell
  - [x] free_all
 
 Lexer
+ - [x] sortir la gestion d'erreur du lexer
  - [x] Not interpret unclosed quotes
  - [x] Not interpret special characters which are not required by the subject such as\(backslash) or;(semicolon).
  - [x] Handle ’ (single quote) which should prevent the shell from interpreting the meta-characters in the quoted sequence.
@@ -13,6 +14,9 @@ Lexer
  - [x] expand after the tokenization
  - [x] clean quotes after the tokenization
 
+Parsing:
+   - [x] espace
+
 Lexer:
     - expand:
         j'ai un char *input;
@@ -22,15 +26,18 @@ Lexer:
 
 Executeur
  - [x] Search and launch the right executable (based on the PATH variable or using a relative or an absolute path)
- - [x] check && is false
+ - [x] check && tries to do the ||
  - [x] check how to handle heredoc in redir:
         - [x] if heredoc abort stop the execution (probleme for ||)
         - [x] clean the heredoc generation
  - [x] expand wildcards
- - [ ] Implement pipes:
-    - [ ] i should wait for groups and cmds
+ - [x] Implement pipes:
+    - [x] i should wait for groups and cmds
+    - [x] set between cmds
  - [x] builtins:
-    - [ ] which should execute in child or not
+    - [x] exit doesn't work
+    - [x] builtin doesn't with &&
+    - [x] which should execute in child or not
     - [x] if tree
     - [x] echo with option-n
     - [x] cd with only a relative or absolute path
@@ -54,6 +61,7 @@ g_status
  - [x] handle in heredoc status
  - [x] clean the ^ notations
  - [x] handle in execution and new_line
+ - [x] subshell
 signal,sigaction, sigemptyset, sigadd
 
 
@@ -62,6 +70,13 @@ prompt:
 - [x] Have a working history
 - [x] handle empty input
 signal,sigaction, sigemptyset, sigadd
+
+Eval:
+- [ ] redir lmao
+- [ ] cd .. check for double frees
+- [ ] if path unset segfault
+- [ ] giga segfault du echo echo "$USER" haihfieu h ihaerough aoueh osiuh oiauw h
+
 
 
 readline, rl_clear_history, rl_on_new_line,rl_replace_line, rl_redisplay, add_history

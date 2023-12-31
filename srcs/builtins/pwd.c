@@ -11,7 +11,9 @@ int	pwd(void)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		return (errno);
-	printf("%s\n", cwd);
+	ft_putstr_fd(cwd, STDOUT_FILENO);
+	ft_putstr_fd("\n", STDOUT_FILENO);
 	free(cwd);
+	errno = 0;
 	return (0);
 }

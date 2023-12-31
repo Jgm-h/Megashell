@@ -11,9 +11,9 @@ int	env(t_token *leaf, t_container *book)
 	i = 0;
 	if (leaf->args[1])
 	{
-		my_print_error("env:");
-		my_print_error(leaf->args[1]);
-		my_print_error(": No such file or directory");
+		ft_putstr_fd("env:", 2);
+		ft_putstr_fd(leaf->args[1], 2);
+		ft_putstr_fd(": No such file or directory", 2);
 		errno = 127;
 		return (ERROR);
 	}
@@ -22,5 +22,6 @@ int	env(t_token *leaf, t_container *book)
 		printf("%s\n", book->envp[i]);
 		i++;
 	}
+	errno = 0;
 	return (SUCCESS);
 }

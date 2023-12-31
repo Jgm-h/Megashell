@@ -25,7 +25,7 @@ T_BOOL	update_old_new_pwd(t_container *book)
 	book->cwd = getcwd(NULL, 0);
 	if (!book->cwd)
 	{
-		my_print_error("minishell-2.0: cwd");
+		ft_putstr_fd("minishell-2.0: cwd", 2);
 		return (FALSE);
 	}
 	index = get_index_env(book->envp, "PWD=");
@@ -44,15 +44,15 @@ int	handle_oldpwd(t_container *book)
 	index = get_index_env(book->envp, "OLDPWD=");
 	if (index == -1)
 	{
-		my_print_error("minishell-2.0: cd: OLDPWD not set");
+		ft_putstr_fd("minishell-2.0: cd: OLDPWD not set", 2);
 		errno = 1;
 		return (ERROR);
 	}
 	if (chdir(book->envp[index] + 7) == -1)
 	{
-		my_print_error("minishell-2.0: cd: ");
-		my_print_error(book->envp[index] + 7);
-		my_print_error(": No such file or directory");
+		ft_putstr_fd("minishell-2.0: cd: ",2 );
+		ft_putstr_fd(book->envp[index] + 7, 2);
+		ft_putstr_fd(": No such file or directory", 2);
 		errno = 1;
 		return (ERROR);
 	}
@@ -69,7 +69,7 @@ int	go_home(t_container *book)
 	index = get_index_env(book->envp, "HOME=");
 	if (index == -1)
 	{
-		my_print_error("minishell-2.0: cd: HOME not set");
+		ft_putstr_fd("minishell-2.0: cd: HOME not set", 2);
 		return (ERROR);
 	}
 	if (chdir(book->envp[index] + 5) == -1)
@@ -83,13 +83,14 @@ int	normal_usage(t_token *leaf, t_container *book)
 {
 	if (chdir(leaf->args[1]) == -1)
 	{
-		my_print_error("minishell-2.0: cd: ");
-		my_print_error(leaf->args[1]);
-		my_print_error(": No such file or directory");
+		ft_putstr_fd("minishell-2.0: cd: ", 2);
+		ft_putstr_fd(leaf->args[1], 2);
+		ft_putstr_fd(": No such file or directory", 2);
 		return (ERROR);
 	}
 	if (!update_old_new_pwd(book))
 		return (ERROR);
+	errno = 0;
 	return (SUCCESS);
 }
 
@@ -113,9 +114,9 @@ T_BOOL	cd(t_token *leaf, t_container *book)
 		return (handle_oldpwd(book));
 	if (leaf->args[1][0] == '-' && leaf->args[1][1])
 	{
-		my_print_error("minishell-2.0: cd:");
-		my_print_error(leaf->args[1]);
-		my_print_error(": invalid option\ncd: usage: cd [-L|-P] [dir]");
+		ft_putstr_fd("minishell-2.0: cd:", 2);
+		ft_putstr_fd(leaf->args[1], 2);
+		ft_putstr_fd(": invalid option\ncd: usage: cd [-L|-P] [dir]", 2);
 		errno = 1;
 		return (ERROR);
 	}

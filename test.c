@@ -10,24 +10,14 @@
 # define TRUE 1
 # define FALSE 0
 
-int test(void)
-{
-	int main;
-
-	main = 2;
-	return (main);
-}
-
-void print_test(int main)
-{
-	printf("%d", main);
-}
 
 int main(int argc, char **argv, char **envp)
 {
-	int main;
+	int fd;
 
-	main = test();
-	print_test(main);
-	return(1);
+	fd = access("1", O_WRONLY);
+	dup2(STDOUT_FILENO, fd);
+	close(fd);
+	printf("%s", "moiiiiifuyigi");
+	return (0);
 }

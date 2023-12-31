@@ -54,7 +54,7 @@ int	ft_value_expand(char *input, char **envp, int exit_status)
 	int	j;
 
 	j = 0;
-	if (input[1] == '?')
+	if (input[0] == '?')
 		return (ft_intlen(exit_status));
 	while (envp[++j])
 	{

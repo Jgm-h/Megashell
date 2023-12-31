@@ -1,12 +1,11 @@
 #include "minishell.h"
+#include "builtins.h"
 
 volatile extern int	g_status;
 
 void	input_handling(t_container *book, char **input)
 {
 	*input = readline(book->prompt);
-	if (!*input)
-		my_print_error("minishell-2.0: exit");
 	add_history(*input);
 }
 
@@ -20,16 +19,17 @@ int	minishell(t_container *book)
 		book->in_pipe = FALSE;
 		input_handling(book, &input);
 		if (!input)
-			continue ;
+			break ;
 		if (!lexer(&input))
 			continue ;
-		printf("%s", input);
 		book->head = parser(input);
+		if (!book->head)
+			continue ;
 		lexer_token(book->head, book);
 		free(input);
-//		if (!exec(book))
-//			book->exit_status = errno;
+		exec(book);
+		free_leaf(book->head);
 	}
-	free_all(book);
+	my_exit(NULL, book);
 	return (1);
 }

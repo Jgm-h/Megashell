@@ -161,31 +161,6 @@ T_BOOL	lexer_redir_clean(char **input)
 	return (TRUE);
 }
 
-void	space_redir_clean(char **input)
-{
-	char	*hook;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	hook = ft_strdup(*input);
-	(*input) = ft_calloc(ft_strlen(hook), sizeof (hook));
-	while (hook[j])
-	{
-		if (hook[j] == '<' || hook[j] == '>')
-		{
-			while (hook[j] && (hook[j] == '<' || hook[j] == '>'))
-				(*input)[i++] = hook[j++];
-			while (hook[j] && hook[j] == ' ')
-				j++;
-		}
-		else
-			(*input)[i++] = hook[j++];
-	}
-	free(hook);
-}
-
 T_BOOL	expand_variables(char **input, t_container *book)
 {
 	int	i;
@@ -235,6 +210,49 @@ void	alloc(char *input, t_token *leaf, T_BOOL simp, T_BOOL doub)
 	leaf->args = ft_calloc(i + 1, sizeof(char *));
 }
 
+int get_small_size(char *str)
+{
+	int	size;
+	char	c;
+
+	size = 0;
+	if (str[size] == ' ')
+		size++;
+	if (str[size] && (str[size] == '\'' || str[size] == '"'))
+	{
+		c = str[size];
+		size++;
+		while (str[size] && str[size] != c)
+			size++;
+	}
+	else
+	{
+		while (str[size] && !((str[size] == ' ') || \
+	(str[size] == '\'') || (str[size] == '"')))
+			size++;
+	}
+	return (size);
+}
+
+int	small_split_quote(char *str, char *to_copy)
+{
+	int	 size;
+	char c;
+
+	size = 0;
+	c = *str;
+	to_copy[size] = str[size];
+	size++;
+	while (str[size] != c)
+	{
+		to_copy[size] = str[size];
+		size++;
+	}
+	to_copy[size] = str[size];
+	size++;
+	return (size);
+}
+
 int	ft_small_split(char *str, char **to_copy, int size, int ign)
 {
 	T_BOOL	simp;
@@ -242,11 +260,13 @@ int	ft_small_split(char *str, char **to_copy, int size, int ign)
 
 	simp = FALSE;
 	doub = FALSE;
-	while (str[size + ign] && !((str[size + ign] == ' ' && !simp && !doub) || \
-	(str[size + ign] == '\'' && !doub) || (str[size + ign] == '\"' && !simp)))
-		size++;
+	size = get_small_size(str);
+	if (*str == ' ')
+		str++;
 	(*to_copy) = ft_calloc(size + 1, sizeof(char));
 	size = 0;
+	if (*str == '\'' || *str == '"')
+		return (small_split_quote(str, *to_copy));
 	while (str[size + ign] && !((str[size + ign] == ' ' && !simp && !doub) || \
 	(str[size + ign] == '\'' && !doub) || (str[size + ign] == '\"' && !simp)))
 	{
@@ -254,7 +274,7 @@ int	ft_small_split(char *str, char **to_copy, int size, int ign)
 		size++;
 	}
 	while (str[size + ign] && ((str[size + ign] == ' ' && !simp && !doub) || \
-		(str[size + ign] == '\'' && !doub) || (str[size + ign] == '\"' && !simp)))
+		(str[size + ign + 1] == '\'' && !doub) || (str[size + ign + 1] == '\"' && !simp)))
 	{
 		if (*str == '\"' && !simp)
 			doub = !doub;
@@ -300,8 +320,7 @@ T_BOOL	lexer_token(t_token *leaf, t_container *book)
 		{
 			if (!expand_variables(&(leaf->args[i]), book))
 				return (FALSE);
-			clean_quotes(&(leaf->args[i]), 0, 0, 0);
-			i++;
+			clean_quotes(&(leaf->args[i++]), 0, 0, 0);
 		}
 		return (TRUE);
 	}
