@@ -19,7 +19,7 @@ int check_digit(t_token *leaf)
 
 	i = 1;
 	j = 0;
-	if (!leaf->args[1])
+	if (!leaf || !leaf->args[1])
 		return (0);
 	while (leaf->args[i])
 	{
@@ -42,7 +42,13 @@ void my_exit(t_token *leaf, t_container *book)
 {
 	int	tmp;
 
-	if (book->in_pipe || check_nmbr_args(leaf))
+	if (!leaf)
+	{
+		free_all(book);
+		ft_putstr_fd("minishell-2.0: exit", 2);
+		exit(0);
+	}
+	if (leaf && (book->in_pipe || check_nmbr_args(leaf)))
 	{
 		errno = 1;
 		if (check_nmbr_args(leaf))

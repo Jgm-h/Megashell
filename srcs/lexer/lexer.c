@@ -107,7 +107,6 @@ T_BOOL	lexer(char **input)
 		return (FALSE);
 	if (!check_heredoc_alone(*input, 0, FALSE))
 		return (FALSE);
-	space_redir_clean(input);
 	lexer_redir_clean(input);
 	return (TRUE);
 }

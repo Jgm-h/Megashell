@@ -72,7 +72,10 @@ prompt:
 signal,sigaction, sigemptyset, sigadd
 
 Eval:
-
+- [ ] redir lmao
+- [ ] cd .. check for double frees
+- [ ] if path unset segfault
+- [ ] giga segfault du echo echo "$USER" haihfieu h ihaerough aoueh osiuh oiauw h
 
 
 

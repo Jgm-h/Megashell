@@ -7,6 +7,11 @@ T_BOOL	echo(t_token *leaf, t_pipes pipes)
 
 	i = 1;
 	option = FALSE;
+	if (!leaf->args[1])
+	{
+		ft_putstr_fd("\n", pipes.out);
+		return (SUCCESS);
+	}
 	if (!ft_strncmp(leaf->args[1], "-n", 3))
 	{
 		option = TRUE;

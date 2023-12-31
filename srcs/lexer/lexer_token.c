@@ -161,31 +161,6 @@ T_BOOL	lexer_redir_clean(char **input)
 	return (TRUE);
 }
 
-void	space_redir_clean(char **input)
-{
-	char	*hook;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	hook = ft_strdup(*input);
-	(*input) = ft_calloc(ft_strlen(hook), sizeof (hook));
-	while (hook[j])
-	{
-		if (hook[j] == '<' || hook[j] == '>')
-		{
-			while (hook[j] && (hook[j] == '<' || hook[j] == '>'))
-				(*input)[i++] = hook[j++];
-			while (hook[j] && hook[j] == ' ')
-				j++;
-		}
-		else
-			(*input)[i++] = hook[j++];
-	}
-	free(hook);
-}
-
 T_BOOL	expand_variables(char **input, t_container *book)
 {
 	int	i;
@@ -241,6 +216,8 @@ int get_small_size(char *str)
 	char	c;
 
 	size = 0;
+	if (str[size] == ' ')
+		size++;
 	if (str[size] && (str[size] == '\'' || str[size] == '"'))
 	{
 		c = str[size];
@@ -284,6 +261,8 @@ int	ft_small_split(char *str, char **to_copy, int size, int ign)
 	simp = FALSE;
 	doub = FALSE;
 	size = get_small_size(str);
+	if (*str == ' ')
+		str++;
 	(*to_copy) = ft_calloc(size + 1, sizeof(char));
 	size = 0;
 	if (*str == '\'' || *str == '"')
