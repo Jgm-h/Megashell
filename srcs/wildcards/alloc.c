@@ -6,7 +6,7 @@
 /*   By: albaud <albaud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/24 23:27:44 by albaud            #+#    #+#             */
-/*   Updated: 2023/12/27 14:59:54 by albaud           ###   ########.fr       */
+/*   Updated: 2023/12/31 04:01:54 by albaud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,33 @@ char	*str_join(char *a, char *b, int to_free)
 	while (b[++i])
 		res[++len] = b[i];
 	free(((char *[]){0, a, b})[to_free]);
+	return (res);
+}
+
+char **strs_insert(char **a, char **b, int index)
+{
+	int		i;
+	int		j;
+	int		len;
+	char	**res;
+
+	len = 0;
+	i = -1;
+	while (a[++i])
+		len++;
+	i = -1;
+	while (b[++i])
+		len++;
+	res = calloc(len + 1, 8);
+	len = -1;
+	i = -1;
+	while (++i < index)
+		res[++len] = a[i];
+	j = -1;
+	while (b[++j])
+		res[++len] = b[j];
+	i--;
+	while (a[++i])
+		res[++len] = a[i];
 	return (res);
 }
