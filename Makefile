@@ -15,6 +15,7 @@ SRCS = ./main.c \
 		./lexer_utils.c \
 		./quotes.c \
 		./parser.c \
+		./redir.c \
 		./exec.c \
 		./exec_redir.c \
 		./one_cmd.c \
@@ -27,7 +28,7 @@ SRCS = ./main.c \
         ./env.c \
         ./exit.c \
         ./free_all.c \
-        ./if_tree.c
+        ./if_tree.c \
 
 
 OBJS_DIR = ./objs

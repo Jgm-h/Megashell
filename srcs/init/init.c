@@ -1,6 +1,12 @@
 #include "minishell.h"
 #include "init.h"
 
+T_BOOL	print_error_init(char *str)
+{
+	ft_putstr_fd(str, 2);
+	return (FALSE);
+}
+
 void init_nmbrs(t_container **book)
 {
 	(*book)->eof_sig = FALSE;
@@ -12,22 +18,22 @@ void init_nmbrs(t_container **book)
 unsigned int init(t_container **book, char **envp, int argc)
 {
 	if (argc != 1)
-		return (my_print_error("Usage: ./minishell {don't use any arguments}\n"));
+		return (print_error_init("Usage: ./minishell {don't use any arguments}\n"));
 	if (!isatty(0) || !isatty(1) || !isatty(2))
-		return (my_print_error("./minishell error with stream\n"));
+		return (print_error_init("./minishell error with stream\n"));
 	(*book) = ft_calloc(1, sizeof (t_container));
 	if (!(*book))
-		return (my_print_error("minishell-2.0: malloc error"));
+		return (print_error_init("minishell-2.0: malloc error"));
 	(*book)->exit_status = 0;
 	(*book)->prompt = "minishell-2.0$";
 	(*book)->cwd = getcwd(NULL, 0);
 	if (!(*book)->cwd)
-		return (my_print_error("minishell: getcwd: "));
+		return (print_error_init("minishell: getcwd: "));
 	if (!init_envp(*book, envp) || !init_paths(*book))
 		return (1);
 	(*book)->prompt = ft_strdup("minishell-2.0$");
 	if (!(*book)->prompt)
-		return (my_print_error("minishell-2.0: malloc error"));
+		return (print_error_init("minishell-2.0: malloc error"));
 	init_termios();
 	init_nmbrs(book);
 	return (1);
@@ -39,13 +45,13 @@ void	init_termios(void)
 
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
-		my_print_error("tcgetattr");
+		ft_putstr_fd("tcgetattr", 2);
 		return ;
 	}
 	term.c_lflag &= ~ECHOCTL;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
 	{
-		my_print_error("tcsetattr");
+		ft_putstr_fd("tcsetattr", 2);
 		return ;
 	}
 }

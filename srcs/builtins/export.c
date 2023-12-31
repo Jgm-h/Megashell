@@ -73,5 +73,6 @@ T_BOOL	export(t_token *leaf, t_container *book)
 		export_pair(leaf->args[i], book);
 		i++;
 	}
+	errno = 0;
 	return (SUCCESS);
 }

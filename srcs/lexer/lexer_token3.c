@@ -32,12 +32,12 @@ T_BOOL	check_heredoc_start(char *input)
 			i++;
 		if (input[i] == '(')
 		{
-			my_print_error("syntax error near unexpected token `('");
+			ft_putstr_fd("syntax error near unexpected token `('", 2);
 			return (FALSE);
 		}
 		if (input[i] == ')')
 		{
-			my_print_error("syntax error near unexpected token `)'");
+			ft_putstr_fd("syntax error near unexpected token `)'", 2);
 			return (FALSE);
 		}
 		while (input[i] == ' ')
@@ -60,12 +60,12 @@ T_BOOL	check_heredoc_alone(char *input, int i, T_BOOL first)
 		{
 			if (first)
 			{
-				my_print_error("syntax error near unexpected token '<<'");
+				ft_putstr_fd("syntax error near unexpected token '<<'", 2);
 				return (FALSE);
 			}
 			if (!input[i + 2])
 			{
-				my_print_error("syntax error near unexpected token `newline'\n");
+				ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
 				return (FALSE);
 			}
 			first = TRUE;

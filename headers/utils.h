@@ -63,8 +63,8 @@ int		my_dup2(int fd_file, int to_dup);
 T_BOOL	my_access(char *file, int flag);
 void	export_value(char *env, char *key, char *value);
 void	replace_path(t_token *leaf, char *pwd);
-T_BOOL	check_builtin(char *str);
-int my_print_error(char *str);
+
+int check_builtin(char *str);
 void	free_array(char **array);
 void	free_leaf(t_token *leaf);
 

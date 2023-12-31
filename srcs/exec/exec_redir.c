@@ -19,7 +19,7 @@ int	get_redir_fd_side(char *file, enum e_token_type type)
 		fd = open(file, O_WRONLY);
 	}
 	if (fd == -1)
-		my_print_error("minishell-2.0: open failed");
+		ft_putstr_fd("minishell-2.0: open failed", 2);
 	return (fd);
 }
 

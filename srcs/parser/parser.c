@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "parser.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -59,8 +60,6 @@ int skip_quotes(char *prompt, int i)
 	return (i);
 }
 
-/*comment ca marche si on a un seul tokken : c'est gerer dans le parser()
- * */
 int	find_level(char *prompt, int level)
 {
 	int			i;
@@ -89,11 +88,11 @@ int	find_level(char *prompt, int level)
 
 int	print_syntax_error(char *message)
 {
-	ft_printf("Minishell: syntax error near unexpected token `%s`\n", message);
+	printf("Minishell: syntax error near unexpected token `%s`\n", message);
 	return (1);
 }
 
-int	syntax_error(prompt)
+int	syntax_error(char *prompt)
 {
 	int			i;
 	int			parenthese_level;
@@ -106,7 +105,7 @@ int	syntax_error(prompt)
 	{
 		len = ft_strlen(strings[i]);
 		if (ft_strncmp(prompt, strings[i], len) == 0
-			|| ft_strncmp(&prompt[strlen(prompt) - len - 1], strings[i], len) == 0)
+			|| ft_strncmp(&prompt[strlen(prompt) - len], strings[i], len) == 0)
 			return (print_syntax_error(strings[i]));
 	}
 	i = -1;
@@ -114,7 +113,7 @@ int	syntax_error(prompt)
 	while (prompt[++i])
 	{
 		parenthese_level += (prompt[i] == '(') - (prompt[i] == ')');
-		if (parenthese_level < 0 && )
+		if (parenthese_level < 0)
 			return (print_syntax_error(")"));
 	}
 	if (parenthese_level != 0)
@@ -122,10 +121,6 @@ int	syntax_error(prompt)
 	return (0);
 }
 
-/*TODO:
- * if  REDIR then set the fd
- * if PIPE do the pipe[2] later
- * */
 t_token	*parser(char *prompt)
 {
 	t_token	*res;

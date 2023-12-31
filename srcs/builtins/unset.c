@@ -12,9 +12,9 @@ T_BOOL	check_unvalid(char *key)
 {
 	if (!ft_isalpha(key[0]) && key[0] != '_')
 	{
-		my_print_error("minishell-2.0: unset: `");
-		my_print_error(key);
-		my_print_error("': not a valid identifier");
+		ft_putstr_fd("minishell-2.0: unset: `", 2);
+		ft_putstr_fd(key, 2);
+		ft_putstr_fd("': not a valid identifier", 2);
 		return (ERROR);
 	}
 	return (SUCCESS);
@@ -81,5 +81,6 @@ T_BOOL	unset(t_token *leaf, t_container *book)
 		else
 			unset_var(book, index);
 	}
+	errno = 0;
 	return (exit);
 }

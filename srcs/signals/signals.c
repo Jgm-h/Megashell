@@ -4,6 +4,7 @@ volatile extern int	g_status;
 
 static void	handle_sigquit(void)
 {
+	return ;
 }
 
 static void	handle_sigint(void)

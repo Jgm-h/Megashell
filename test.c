@@ -17,6 +17,7 @@ int main(int argc, char **argv, char **envp)
 
 	fd = access("1", O_WRONLY);
 	dup2(STDOUT_FILENO, fd);
-	printf("%s", "moiiiiii");
+	close(fd);
+	printf("%s", "moiiiiifuyigi");
 	return (0);
 }

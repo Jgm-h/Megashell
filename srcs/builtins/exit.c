@@ -7,7 +7,7 @@ T_BOOL	check_nmbr_args(t_token *leaf)
 	i = 0;
 	while (leaf->args[i])
 		i++;
-	if (i > 1)
+	if (i > 2)
 		return (TRUE);
 	return (FALSE);
 }
@@ -15,31 +15,29 @@ T_BOOL	check_nmbr_args(t_token *leaf)
 int check_digit(t_token *leaf)
 {
 	int	i;
+	int j;
 
-	i = 0;
-	while (leaf->args[1][i])
+	i = 1;
+	j = 0;
+	if (!leaf->args[1])
+		return (0);
+	while (leaf->args[i])
 	{
-		if (!ft_isdigit(leaf->args[1][i]))
+		if (leaf->args[1][j] == '+' || leaf->args[1][j] == '-')
+			j++;
+		while (leaf->args[1][j] && ft_isdigit(leaf->args[1][j]))
+			j++;
+		if (leaf->args[1][j] && !ft_isdigit(leaf->args[1][j]))
 		{
-			my_print_error("minishell-2.0: exit:");
-			my_print_error(leaf->args[1]);
-			my_print_error("numeric argument required");
+			ft_putstr_fd("minishell-2.0: exit:", 2);
+			ft_putstr_fd(leaf->args[1], 2);
+			ft_putstr_fd(" numeric argument required", 2);
 		}
 		i++;
 	}
-	if (i == 1)
-		return (1);
-	return (0);
+	return (i - 1);
 }
 
-/*	TODO:
- *  	- [x] if there is arg, get it in 256
- * 		- [x] if the arg is not numeric error
- * 		- [x] if more than one arg error and continue
- * 		- [x] free then write exit\n and then exit with arg given
- * 		- [x] if no arg exit with the old exit+statuts
- * 		- [x] if in pipe errno  = 1
- * */
 void my_exit(t_token *leaf, t_container *book)
 {
 	int	tmp;
@@ -48,10 +46,10 @@ void my_exit(t_token *leaf, t_container *book)
 	{
 		errno = 1;
 		if (check_nmbr_args(leaf))
-			my_print_error("exit\nminishell-2.0: exit: too many arguments");
+			ft_putstr_fd("exit\nminishell-2.0: exit: too many arguments", 2);
 		return ;
 	}
-	my_print_error("exit");
+	ft_putstr_fd("exit", 2);
 	tmp = check_digit(leaf);
 	if (tmp == 1)
 		tmp = ft_atoi(leaf->args[1]);

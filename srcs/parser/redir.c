@@ -1,26 +1,28 @@
 #include "minishell.h"
+#include "parser.h"
 
+/*TODO:
+ * 	- [ ] match type for redir type (ft_strncmp)
+ * */
 t_token	*get_redir(char *prompt, int i, char *redire_type)
 {
 	t_token	*res;
 	int		j;
-	int		ind;
 	char	*ret;
 	int		start;
 
 	j = i + strlen(redire_type);
-	ind = 0;
 	while (prompt[j] && iswhitespace(prompt[j]))
 		j++;
 	start = j;
 	while (prompt[j] && !iswhitespace(prompt[j]))
 		j++;
 	ret = ft_calloc(j - start + 1, sizeof (char));
-	ret = ft_strncpy(ret, &prompt[start], j - start);
+	ft_strlcpy(ret, &prompt[start], j - start);
 	res = ft_calloc(1, sizeof(t_token));
-	res->type = REDIR;// TDOO
+	res->type = IN_REDIR;
 	res->argv = ret;
-	ft_strcpy(&prompt[i], &prompt[j]);
+	ft_strlcpy(&prompt[i], &prompt[j], ft_strlen(&prompt[j]));
 	return (res);
 }
 
@@ -46,7 +48,7 @@ t_token	*redir(char *prompt)
 				if (res == 0)
 					res = tmp2;
 				if (tmp)
-					tmp.next = tmp2;
+					tmp->right = tmp2;
 				else
 					tmp  = tmp2;
 			}

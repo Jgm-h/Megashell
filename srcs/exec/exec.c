@@ -18,7 +18,7 @@ T_BOOL	execute_pipe(t_token *leaf, t_container *book, t_pipes pipes)
 	left.out = _pipe.out;
 	right.in = _pipe.in;
 	r_executor(leaf->left, book, left);
-	r_executor(leaf->left, book, right);
+	r_executor(leaf->right, book, right);
 	book->in_pipe = FALSE;
 	return (SUCCESS);
 }
@@ -42,7 +42,7 @@ T_BOOL exec_and(t_token *leaf, t_container *book, t_pipes pipes)
 		handle_exit_status(status);
 		book->nmbr_exec--;
 	}
-	if (errno)
+	if (g_status == ABORT_HEREDOC || errno)
 		return (ERROR);
 	r_executor(leaf->right, book, pipes);
 	while (book->nmbr_exec)
@@ -58,15 +58,18 @@ T_BOOL exec_and(t_token *leaf, t_container *book, t_pipes pipes)
 
 T_BOOL exec_or(t_token *leaf, t_container *book, t_pipes pipes)
 {
-	int	status;
+	int		status;
+	T_BOOL	ret;
 
-	r_executor(leaf->left, book, pipes);
+	ret = r_executor(leaf->left, book, pipes);
 	while (book->nmbr_exec)
 	{
 		waitpid(0, &status, 0);
 		handle_exit_status(status);
 		book->nmbr_exec--;
 	}
+	if (!ret)
+		return (SUCCESS);
 	if (g_status == ABORT_HEREDOC)
 		return (ERROR);
 	r_executor(leaf->right, book, pipes);
@@ -83,7 +86,8 @@ T_BOOL exec_or(t_token *leaf, t_container *book, t_pipes pipes)
 
 T_BOOL	r_executor(t_token *leaf, t_container *book, t_pipes pipes)
 {
-	if (g_status == EXECUTION) {
+	if (g_status == EXECUTION)
+	{
 		if (!leaf)
 			return (SUCCESS);
 		else if (leaf->type == AND)

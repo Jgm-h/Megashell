@@ -14,6 +14,9 @@ Lexer
  - [x] expand after the tokenization
  - [x] clean quotes after the tokenization
 
+Parsing:
+   - [x] espace
+
 Lexer:
     - expand:
         j'ai un char *input;
@@ -23,7 +26,7 @@ Lexer:
 
 Executeur
  - [x] Search and launch the right executable (based on the PATH variable or using a relative or an absolute path)
- - [x] check && is false
+ - [x] check && tries to do the ||
  - [x] check how to handle heredoc in redir:
         - [x] if heredoc abort stop the execution (probleme for ||)
         - [x] clean the heredoc generation
@@ -32,7 +35,9 @@ Executeur
     - [x] i should wait for groups and cmds
     - [x] set between cmds
  - [x] builtins:
-    - [ ] which should execute in child or not
+    - [x] exit doesn't work
+    - [x] builtin doesn't with &&
+    - [x] which should execute in child or not
     - [x] if tree
     - [x] echo with option-n
     - [x] cd with only a relative or absolute path
@@ -56,7 +61,7 @@ g_status
  - [x] handle in heredoc status
  - [x] clean the ^ notations
  - [x] handle in execution and new_line
- - [ ] subshell
+ - [x] subshell
 signal,sigaction, sigemptyset, sigadd
 
 
@@ -65,6 +70,10 @@ prompt:
 - [x] Have a working history
 - [x] handle empty input
 signal,sigaction, sigemptyset, sigadd
+
+Eval:
+
+
 
 
 readline, rl_clear_history, rl_on_new_line,rl_replace_line, rl_redisplay, add_history

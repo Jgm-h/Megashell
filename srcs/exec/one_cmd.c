@@ -47,7 +47,10 @@ void	child(int *pipes_here, t_token *leaf, t_pipes pipes, t_container *book)
 		return ;
 	if (dup2(STDOUT_FILENO, pipes.out) == -1)
 		return ;
-	close(STDIN_FILENO);
+	if (pipes.in != 0)
+		close(pipes.in);
+	if (pipes.out != 1)
+		close(pipes.out);
 	if (book->eof_sig && !pipes.in)
 	{
 		dup2(pipes_here[0], STDIN_FILENO);
@@ -55,7 +58,7 @@ void	child(int *pipes_here, t_token *leaf, t_pipes pipes, t_container *book)
 		close(pipes_here[1]);
 	}
 	execve(leaf->args[0], leaf->args, book->envp);
-	my_print_error("minishell: execution failed");
+	ft_putstr_fd("minishell: execution failed", 2);
 }
 
 void execute(t_token *leaf, t_container *book, t_pipes pipes)
@@ -65,14 +68,17 @@ void execute(t_token *leaf, t_container *book, t_pipes pipes)
 	if (book->eof_sig)
 	{
 		if (pipe(pipes_here) == -1)
-			my_perror("pipe", book);
+			ft_putstr_fd("pipe", 2);
 	}
-	if (fork1() == 0)
+	else if (fork1() == 0)
 	{
 		if (book->eof_sig)
 			dup2(pipes_here[1], STDIN_FILENO);
 		if (check_builtin(leaf->args[0]))
+		{
 			execute_builtins(leaf, book, pipes);
+			exit(errno);
+		}
 		child(pipes_here, leaf, pipes, book);
 	}
 	if (book->eof_sig)
@@ -83,25 +89,31 @@ int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
 {
 	char	*path;
 
-	leaf->args = ft_split(leaf->argv, ' ');
-	if (!leaf->args)
-		return (FALSE);
-	path = find_path(book, -1, leaf->args[0]);
-	if (!path)
+	if (check_builtin(leaf->args[0]) == 1)
+		execute(leaf, book, pipes);
+	else if (check_builtin(leaf->args[0]) == 2 && pipes.out == 1)
+		return (execute_builtins(leaf, book, pipes));
+	else
 	{
-		ft_putstr_fd((char *)"minishell: ", STDERR_FILENO);
-		ft_putstr_fd(leaf->args[0], STDERR_FILENO);
-		ft_putstr_fd((char *)": command not found\n", STDERR_FILENO);
-		book->exit_status = 127;
-		return (FALSE);
+		path = find_path(book, -1, leaf->args[0]);
+		if (!path)
+		{
+			ft_putstr_fd((char *)"minishell: ", 2);
+			ft_putstr_fd(leaf->args[0], 2);
+			ft_putstr_fd((char *)": command not found\n", 2);
+			book->exit_status = 127;
+			return (ERROR);
+		}
+		if (path != leaf->args[0])
+			free(leaf->args[0]);
+		leaf->args[0] = path;
+		execute(leaf, book, pipes);
 	}
-	free(leaf->args[0]);
-	leaf->args[0] = path;
-	execute(leaf, book, pipes);
 	if (pipes.in != 0)
 		close(pipes.in);
 	if (pipes.out != 1)
 		close(pipes.out);
-	book->nmbr_exec++;
+	if (check_builtin(leaf->args[0]) != 2)
+		book->nmbr_exec++;
 	return (SUCCESS);
 }

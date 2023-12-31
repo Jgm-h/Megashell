@@ -6,7 +6,7 @@ void	input_handling(t_container *book, char **input)
 {
 	*input = readline(book->prompt);
 	if (!*input)
-		my_print_error("minishell-2.0: exit");
+		ft_putstr_fd("minishell-2.0: exit", 2);
 	add_history(*input);
 }
 
@@ -24,6 +24,8 @@ int	minishell(t_container *book)
 		if (!lexer(&input))
 			continue ;
 		book->head = parser(input);
+		if (!book->head)
+			continue ;
 		lexer_token(book->head, book);
 		free(input);
 		exec(book);
