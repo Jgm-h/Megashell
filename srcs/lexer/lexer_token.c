@@ -130,11 +130,6 @@ void ft_reassemble(char ***split)
 	(*split)[0] = ft_strjoin((*split)[0], (*split)[3]);
 }
 
-/* elle recoit un pointeur vers une string
- * quand elle rencontre une redirection
- * cette solution a un souci quand redir size != cmd size
- * need to split it up and join
- * */
 T_BOOL	lexer_redir_clean(char **input)
 {
 	int	i;
@@ -210,84 +205,56 @@ void	alloc(char *input, t_token *leaf, T_BOOL simp, T_BOOL doub)
 	leaf->args = ft_calloc(i + 1, sizeof(char *));
 }
 
-int get_small_size(char *str)
+int	get_len_split(char *str)
 {
-	int	size;
 	char	c;
+	int		i;
 
-	size = 0;
-	if (str[size] == ' ')
-		size++;
-	if (str[size] && (str[size] == '\'' || str[size] == '"'))
-	{
-		c = str[size];
-		size++;
-		while (str[size] && str[size] != c)
-			size++;
-	}
+	i = 0;
+	if (str[i] == '"' || str[i] == '\'')
+		c = str[i];
 	else
-	{
-		while (str[size] && !((str[size] == ' ') || \
-	(str[size] == '\'') || (str[size] == '"')))
-			size++;
-	}
-	if (!str[size])
-		return (size - 1);
-	return (size);
+		c = ' ';
+	i++;
+	while (str[i] && str[i] != c)
+		i++;
+	return (i);
 }
 
-int	small_split_quote(char *str, char *to_copy)
+char	find_sep(char *str)
 {
-	int	 size;
-	char c;
-
-	size = 0;
-	c = *str;
-	to_copy[size] = str[size];
-	size++;
-	while (str[size] != c)
-	{
-		to_copy[size] = str[size];
-		size++;
-	}
-	to_copy[size] = str[size];
-	size++;
-	return (size);
+	if (*str == '"' || *str == '\'')
+		return (*str);
+	else
+		return (' ');
 }
 
-int	ft_small_split(char *str, char **to_copy, int size, int ign)
+int ft_small_split(char *str, char **to_copy)
 {
-	T_BOOL	simp;
-	T_BOOL	doub;
+	int		i;
+	char	c;
+	T_BOOL	check;
 
-	simp = FALSE;
-	doub = FALSE;
-	size = get_small_size(str);
-	if (*str == ' ')
+	check = TRUE;
+	(*to_copy) = ft_calloc(get_len_split(str), sizeof (char));
+	c = find_sep(str);
+	i = 0;
+	while (str[i])
 	{
-		str++;
-		ign++;
+		if (c == ' ' && str[i] == ' ')
+			break;
+		else if (check && str[i] == c && c != ' ')
+			check = !check;
+		else if (!check && str[i] == c && c != ' ')
+		{
+			(*to_copy)[i] = str[i];
+			i++;
+			break;
+		}
+		(*to_copy)[i] = str[i];
+		i++;
 	}
-	(*to_copy) = ft_calloc(size + 1, sizeof(char));
-	size = 0;
-	if (*str == '\'' || *str == '"')
-		return (small_split_quote(str, *to_copy));
-	while (str[size + ign] && !((str[size + ign] == ' ' && !simp && !doub) || \
-	(str[size + ign] == '\'' && !doub) || (str[size + ign] == '\"' && !simp)))
-	{
-		(*to_copy)[size] = str[ign + size];
-		size++;
-	}
-	while (str[size + ign] && ((str[size + ign] == ' ' && !simp && !doub) || \
-		(str[size + ign + 1] == '\'' && !doub) || (str[size + ign + 1] == '\"' && !simp)))
-	{
-		if (*str == '\"' && !simp)
-			doub = !doub;
-		if (*str == '\'' && !doub)
-			simp = !simp;
-		ign++;
-	}
-	return (size + ign);
+	return (i);
 }
 
 void	split_var(char *input, t_token *leaf)
@@ -298,17 +265,12 @@ void	split_var(char *input, t_token *leaf)
 	i = 0;
 	j = 0;
 	alloc(input, leaf, FALSE, FALSE);
-	while(input[i] == ' ' || input[i] == '\'' || input[i] == '\"')
-		i++;
 	while (input[i])
 	{
-		i += ft_small_split(&input[i], &(leaf->args[j]), 0, 0);
+		while (input[i] && input[i] == ' ')
+			i++;
+		i += ft_small_split(&input[i], &(leaf->args[j]));
 		j++;
-	}
-	if (!leaf->args[j - 2][1] && !leaf->args[j - 1][1] && (leaf->args[j - 2][0] == leaf->args[j - 1][0]))
-	{
-		free (leaf->args[j - 1]);
-		leaf->args[j - 1] = NULL;
 	}
 }
 
@@ -330,6 +292,7 @@ T_BOOL	lexer_token(t_token *leaf, t_container *book)
 			if (!expand_variables(&(leaf->args[i]), book))
 				return (FALSE);
 			clean_quotes(&(leaf->args[i++]), 0, 0, 0);
+			clean_quotes(&(leaf->argv), 0, 0, 0);
 		}
 		return (TRUE);
 	}

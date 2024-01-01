@@ -53,7 +53,7 @@ char	*trim_space(char *prompt)
 int skip_quotes(char *prompt, int i)
 {
 	char	c;
-	if (prompt[i] !=  '"' && prompt[i] != '\'')
+	if (prompt[i] != '"' && prompt[i] != '\'')
 		return (i);
 	c = prompt[i];
 	while (prompt[++i] && prompt[i] != c)

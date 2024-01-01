@@ -123,7 +123,6 @@ void exec(t_container *book)
 			handle_exit_status(status);
 			book->nmbr_exec--;
 		}
-		if (errno)
-			book->exit_status = errno;
+		book->exit_status = errno;
 	}
 }

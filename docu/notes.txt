@@ -72,14 +72,12 @@ prompt:
 signal,sigaction, sigemptyset, sigadd
 
 Eval:
-- [ ] redir lmao
+- [x] redir lmao
 - [x] cd .. check for double frees
     - [x] check absolute path
     - [x] oldpwd works
 - [x] if path unset segfault
 - [x] giga segfault du echo "$USER"  h ihaerough aoueh osiuh oiauw h
-
-
 
 readline, rl_clear_history, rl_on_new_line,rl_replace_line, rl_redisplay, add_history
 

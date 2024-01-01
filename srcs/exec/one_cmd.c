@@ -92,6 +92,7 @@ int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
 
 	if (leaf->right)
 		if (!execute_redir(leaf, book, pipes))
+			return (FALSE);
 	if (check_builtin(leaf->args[0]) == 1)
 		execute(leaf, book, pipes);
 	else if (check_builtin(leaf->args[0]) == 2 && pipes.out == 1)
