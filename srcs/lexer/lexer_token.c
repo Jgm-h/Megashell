@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_token.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albaud <albaud@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/01 23:51:26 by albaud            #+#    #+#             */
+/*   Updated: 2024/01/01 23:52:29 by albaud           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	alloc(char *input, t_token *leaf, T_BOOL simp, T_BOOL doub)
@@ -50,6 +62,18 @@ char	find_sep(char *str)
 		return (' ');
 }
 
+char	**prendlewildcardetwildcardmoicasalpouilleuxdesclave(char **args, int i)
+{
+	char	**res;
+	char	**wild;
+
+	wild = wildcard(args[i]);
+	res = strs_insert(args, wild, i);
+	free(wild);
+	free(args);
+	return (res);
+}
+
 T_BOOL	lexer_token(t_token *leaf, t_container *book)
 {
 	int	i;
@@ -69,6 +93,9 @@ T_BOOL	lexer_token(t_token *leaf, t_container *book)
 			if (!expand_variables(&(leaf->args[i]), book))
 				return (FALSE);
 			c_qts(&(leaf->args[i++]), 0, 0, 0);
+			if (ft_strchr(leaf->args[i - 1], '*'))
+				leaf->args = prendlewildcardetwildcardmoicasalpouilleuxdesclave
+					(leaf->args, i - 1);
 			c_qts(&(leaf->argv), 0, 0, 0);
 		}
 		return (TRUE);

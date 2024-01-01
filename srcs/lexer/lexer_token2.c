@@ -72,6 +72,8 @@ void	c_qts(char **input, T_BOOL in_double, T_BOOL in_simple, int i)
 
 	while ((*input)[i])
 	{
+		if (input[0][i] == '*')
+			(*input)[i] = 1;
 		if (((*input)[i] == '\"' && !in_simple) || \
 			((*input)[i] == '\'' && !in_double))
 		{

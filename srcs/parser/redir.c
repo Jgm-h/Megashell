@@ -45,24 +45,22 @@ t_token	*redir(char *prompt, int i, t_token *res, t_token *tmp)
 
 	while (prompt[++i])
 	{
-		if (prompt[i] == '"' || prompt[i] == '\'')
-			i = skip_quotes(prompt, i);
+		i = skip_quotes(prompt, i);
 		j = -1;
 		while (++j < 4)
 		{
-			if (ft_strncmp(&prompt[i], strings[j], strlen(strings[j])) == 0)
+			if (!(ft_strncmp(&prompt[i], strings[j], strlen(strings[j])) == 0))
+				continue ;
+			tmp2 = get_redir(prompt, i, strings[j]);
+			if (res == 0)
+				res = tmp2;
+			if (tmp)
 			{
-				tmp2 = get_redir(prompt, i, strings[j]);
-				if (res == 0)
-					res = tmp2;
-				if (tmp)
-				{
-					tmp->right = tmp2;
-					tmp = tmp2;
-				}
-				else
-					tmp = tmp2;
+				tmp->right = tmp2;
+				tmp = tmp2;
 			}
+			else
+				tmp = tmp2;
 		}
 	}
 	return (res);

@@ -6,41 +6,13 @@
 /*   By: albaud <albaud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 23:09:53 by albaud            #+#    #+#             */
-/*   Updated: 2023/12/31 04:33:06 by albaud           ###   ########.fr       */
+/*   Updated: 2024/01/01 23:50:47 by albaud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parser.h"
 #include <string.h>
-
-char	*parenthese_trim(char *prompt)
-{
-	int	i;
-
-	i = ft_strlen(prompt);
-	prompt[0] = 0;
-	if (prompt[i - 1] != ')')
-		return (NULL);
-	prompt[i - 1] = 0;
-	return (&prompt[1]);
-}
-
-char	*trim_space(char *prompt)
-{
-	int	i;
-
-	i = ft_strlen(prompt);
-	while (--i >= 0 && iswhitespace(prompt[i]))
-		;
-	prompt[i + 1] = 0;
-	i = -1;
-	while (iswhitespace(prompt[++i]))
-		;
-	if (i > 0)
-		prompt[i - 1] = 0;
-	return (&prompt[i]);
-}
 
 int	find_level(char *prompt, int level)
 {
@@ -94,43 +66,41 @@ int	syntax_error(char *prompt)
 	return (0);
 }
 
+t_token	*parse_command(char *prompt)
+{
+	t_token	*res;
+
+	if (prompt[0] == '(')
+		return (parser(parenthese_trim(prompt)));
+	res = ft_calloc(1, sizeof(t_token));
+	res->type = COMMAND;
+	res->right = redir(prompt, -1, NULL, NULL);
+	res->argv = strdup(prompt);
+	return (res);
+}
+
 t_token	*parser(char *prompt)
 {
 	t_token	*res;
 	int		i;
 	int		index;
 
-	if (!prompt || !*prompt)
-		return (NULL);
-	res = ft_calloc(1, sizeof(t_token));
 	prompt = trim_space(prompt);
-	if (syntax_error(prompt))
+	if (!prompt || !*prompt || syntax_error(prompt))
 		return (NULL);
 	i = -1;
 	index = -1;
 	while (++i < 3 && index == -1)
 		index = find_level(prompt, i);
 	if (index == -1)
-	{
-		if (prompt[0] == '(')
-			return (parser(parenthese_trim(prompt)));
-		res->type = COMMAND;
-		res->right = redir(prompt, -1, NULL, NULL);
-		res->argv = strdup(prompt);
-		return (res);
-	}
+		return (parse_command(prompt));
+	res = ft_calloc(1, sizeof(t_token));
 	res->type = i - 1;
-	if (prompt)
-	{
-		res->left = parser(prompt);
-		if (res->left == NULL)
-			return (NULL);
-	}
-	if (prompt[index])
-	{
-		res->right = parser(&prompt[index]);
-		if (res->right == NULL)
-			return (NULL);
-	}
+	res->left = parser(prompt);
+	if (res->left == NULL)
+		return (NULL);
+	res->right = parser(&prompt[index]);
+	if (res->right == NULL)
+		return (NULL);
 	return (res);
 }
