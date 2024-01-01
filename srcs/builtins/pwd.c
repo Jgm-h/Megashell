@@ -1,9 +1,5 @@
 #include "minishell.h"
 
-/* this builtin should print the working directory using getcwd
- * getcwd space needs to be freed
- * */
-
 int	pwd(void)
 {
 	char	*cwd;

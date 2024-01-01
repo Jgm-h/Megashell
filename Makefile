@@ -29,6 +29,15 @@ SRCS = ./main.c \
         ./exit.c \
         ./free_all.c \
         ./if_tree.c \
+        ./alloc.c \
+        ./cmp.c \
+        ./wild_utils.c \
+        ./wild.c \
+        ./parser_utils.c \
+        ./exec_utils.c \
+        ./init_utils.c \
+        ./redir_utils.c \
+		./utils2.c \
 
 
 OBJS_DIR = ./objs
@@ -43,6 +52,7 @@ SRCS_DIR = ./srcs/main \
 			./srcs/parser \
 			./srcs/signals \
 			./srcs/utils \
+			./srcs/wildcards \
 			./srcs/free
 
 OBJS = $(addprefix $(OBJS_DIR)/, $(notdir $(SRCS:.c=.o)))

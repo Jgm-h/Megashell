@@ -65,16 +65,7 @@ unsigned int	ft_strcpy_lexer(char **input, int i, char *env, int j)
 	return (TRUE);
 }
 
-T_BOOL	check_char_redir(char c)
-{
-	if (c == '|' \
-	|| c == '&' || c == ')' || c == '(')
-		return (FALSE);
-	return (TRUE);
-}
-
-
-void	clean_quotes(char **input, T_BOOL in_double, T_BOOL in_simple, int i)
+void	c_qts(char **input, T_BOOL in_double, T_BOOL in_simple, int i)
 {
 	int		j;
 	char	c;

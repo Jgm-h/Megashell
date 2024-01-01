@@ -1,24 +1,5 @@
 #include "minishell.h"
 
-int	ft_redirlen(char *redir)
-{
-	int	i;
-
-	i = 0;
-	while (*redir && (*redir == '<' || *redir == '>'))
-	{
-		redir++;
-		i++;
-	}
-	while (*redir && *redir != ' ' && *redir != '<' && *redir != '>' \
-		&& *redir != ')' && *redir != '|' && *redir != '&')
-	{
-		redir++;
-		i++;
-	}
-	return (i);
-}
-
 T_BOOL	check_heredoc_start(char *input)
 {
 	int	i;
@@ -65,7 +46,8 @@ T_BOOL	check_heredoc_alone(char *input, int i, T_BOOL first)
 			}
 			if (!input[i + 2])
 			{
-				ft_putstr_fd("syntax error near unexpected token `newline'\n", 2);
+				ft_putstr_fd \
+				("syntax error near unexpected token `newline'\n", 2);
 				return (FALSE);
 			}
 			first = TRUE;

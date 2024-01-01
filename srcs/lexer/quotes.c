@@ -1,9 +1,6 @@
 #include "minishell.h"
 #include "lexer.h"
 
-/*version one checks if there is an odd or even number of single and double quotes
- * tested with: "'" '"'
- * */
 T_BOOL	check_closed_quotes(const char *input, int in_single, int in_double)
 {
 	int		single_quotes;
@@ -32,15 +29,6 @@ T_BOOL	check_closed_quotes(const char *input, int in_single, int in_double)
 	return (TRUE);
 }
 
-/*
- * I want this to check if i can expand depending on quote status:
- * 	if i-m in double quotes, and then in single inside the dobule i still expand
- * 	if im single i don't expand
- * 	if im in none i expand
- *
- * if i can and i encounter a $:
- * if i can't expand what comes i delete it(the $ and what comes after) from the chain
- * */
 T_BOOL	check_state(char *input, int pos, T_BOOL in_double, T_BOOL in_simple)
 {
 	int		i;
@@ -69,9 +57,6 @@ T_BOOL	check_state(char *input, int pos, T_BOOL in_double, T_BOOL in_simple)
 	return (can_exp);
 }
 
-
-/*CODE DE MERDE XD
- * */
 T_BOOL	check_expand(char *input, int i, t_container *book)
 {
 	int	j;

@@ -1,6 +1,5 @@
 #include "minishell.h"
 #include "lexer.h"
-#define E_SYN "syntax error near unexpected token"
 
 T_BOOL	check_empty_prompt(char *input)
 {
@@ -14,89 +13,72 @@ T_BOOL	check_empty_prompt(char *input)
 	return (TRUE);
 }
 
-T_BOOL	redir_clean_heredoc(char **input, int i, int k)
+T_BOOL	expand_variables(char **input, t_container *book)
 {
-	int		j;
-	char	*hook;
+	int	i;
+	int	tmp;
 
-	j = -1;
-	hook = ft_strdup((*input));
-	if (!hook)
-		return (FALSE);
-	(*input) = ft_calloc(ft_strlen(*input) + 1, sizeof (char));
-	if (!(*input))
-		return (FALSE);
-	while (++j < i)
-		(*input)[j] = hook[j];
-	while (hook[j + k] != ' ')
-		k++;
-	while (hook[j + k] && hook[j + k] != ')' && \
-		hook[j + k] != '|' && hook[j + k] != '&')
+	i = 0;
+	while ((*input)[i])
 	{
-		(*input)[j] = hook[j + k];
-		j++;
+		if (check_state((*input), i, FALSE, \
+				FALSE) && check_expand((*input), i, book))
+		{
+			tmp = ft_value_expand(&(*input)[i + 1], \
+				book->envp, book->exit_status);
+			if (!expand(input, book, i))
+				return (FALSE);
+			i += tmp;
+		}
+		else
+			i++;
 	}
-	(*input)[j++] = ' ';
-	while (hook[i] != ' ')
-		(*input)[j++] = hook[i++];
-	while (hook[j])
-	{
-		(*input)[j] = hook[j];
-		j++;
-	}
-	free(hook);
 	return (TRUE);
 }
 
-T_BOOL	check_redir(char *input, int i)
+int	ft_small_split(char *str, char **to_copy)
 {
-	T_BOOL	redir;
+	int		i;
+	char	c;
+	T_BOOL	check;
 
-	redir = FALSE;
-	while (input[i] && input[i] != ')' && input[i] != '|' && input[i] != '&')
+	check = TRUE;
+	(*to_copy) = ft_calloc(get_len_split(str), sizeof (char));
+	c = find_sep(str);
+	i = 0;
+	while (str[i])
 	{
-		if (input[i] == '<' || input[i] == '>')
-			redir = TRUE;
-		if (input[i] == ' ')
-			redir = FALSE;
-		if (input[i] != '<' && input[i] != '>' && \
-			input[i] != ' ' && redir == FALSE)
-			return (TRUE);
+		if (c == ' ' && str[i] == ' ')
+			break ;
+		else if (check && str[i] == c && c != ' ')
+			check = !check;
+		else if (!check && str[i] == c && c != ' ')
+		{
+			(*to_copy)[i] = str[i];
+			i++;
+			break ;
+		}
+		(*to_copy)[i] = str[i];
 		i++;
 	}
-	return (FALSE);
+	return (i);
 }
 
-T_BOOL	redir_clean(char **input, int i, int k, int j)
+void	split_var(char *input, t_token *leaf)
 {
-	char	*hook;
-	char	*redir;
-	int		redir_len;
+	int	i;
+	int	j;
 
-	redir_len = ft_redirlen((*input) + i);
-	redir = ft_calloc(redir_len + 1, sizeof (char));
-	ft_strlcpy(redir, (*input) + i, redir_len + 1);
-	hook = ft_strdup(*input);
-	(*input) = ft_calloc(ft_strlen(*input) + 1, sizeof (char));
-	if (!(*input) || !hook || !redir)
-		return (FALSE);
-	while (++j < i)
-		(*input)[j] = hook[j];
-	while (check_char_redir(hook[j + redir_len]))
+	i = 0;
+	j = 0;
+	alloc(input, leaf, FALSE, FALSE);
+	while (input[i])
 	{
-		(*input)[j] = hook[j + redir_len];
+		while (input[i] && input[i] == ' ')
+			i++;
+		i += ft_small_split(&input[i], &(leaf->args[j]));
 		j++;
 	}
-	while (redir[++k])
-		(*input)[j + k] = redir[k];
-	while (hook[j + redir_len])
-	{
-		(*input)[j + redir_len] = hook[j + redir_len];
-		j++;
-	}
-	free(hook);
-	free(redir);
-	return (TRUE);
 }
 
 T_BOOL	lexer(char **input)
@@ -107,6 +89,5 @@ T_BOOL	lexer(char **input)
 		return (FALSE);
 	if (!check_heredoc_alone(*input, 0, FALSE))
 		return (FALSE);
-	lexer_redir_clean(input);
 	return (TRUE);
 }

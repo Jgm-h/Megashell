@@ -1,4 +1,4 @@
-# include "minishell.h"
+#include "minishell.h"
 
 T_BOOL	check_nmbr_args(t_token *leaf)
 {
@@ -12,10 +12,10 @@ T_BOOL	check_nmbr_args(t_token *leaf)
 	return (FALSE);
 }
 
-int check_digit(t_token *leaf)
+int	check_digit(t_token *leaf)
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = 1;
 	j = 0;
@@ -38,7 +38,7 @@ int check_digit(t_token *leaf)
 	return (i - 1);
 }
 
-void my_exit(t_token *leaf, t_container *book)
+void	my_exit(t_token *leaf, t_container *book)
 {
 	int	tmp;
 

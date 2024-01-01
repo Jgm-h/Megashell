@@ -1,11 +1,4 @@
-# include "minishell.h"
-
-/* TODO:
- *  	- [x] check that first char is possible return error do until faulty
- * 		- [x] while arg export the arg (allowed char are alpha, digit, '_'):
- * 		   	- [x] check for the = sign if not skip
- * 		- [x] the first char should not be a digit
- * */
+#include "minishell.h"
 
 T_BOOL	check_allowed_char_key(char *str)
 {

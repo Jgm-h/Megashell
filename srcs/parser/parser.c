@@ -12,15 +12,7 @@
 
 #include "minishell.h"
 #include "parser.h"
-#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-int iswhitespace(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n');
-}
 
 char	*parenthese_trim(char *prompt)
 {
@@ -50,24 +42,12 @@ char	*trim_space(char *prompt)
 	return (&prompt[i]);
 }
 
-int skip_quotes(char *prompt, int i)
-{
-	char	c;
-	if (prompt[i] != '"' && prompt[i] != '\'')
-		return (i);
-	c = prompt[i];
-	while (prompt[++i] && prompt[i] != c)
-		;
-	return (i);
-}
-
 int	find_level(char *prompt, int level)
 {
 	int			i;
 	int			parenthese_level;
 	int			len;
-	static char	*strings[] = {
-			"&&", "||", "|"};
+	static char	*strings[] = {"&&", "||", "|"};
 
 	len = ft_strlen(strings[level]);
 	i = -1;
@@ -86,19 +66,12 @@ int	find_level(char *prompt, int level)
 	return (-1);
 }
 
-int	print_syntax_error(char *message)
-{
-	printf("Minishell: syntax error near unexpected token `%s`\n", message);
-	return (1);
-}
-
 int	syntax_error(char *prompt)
 {
 	int			i;
 	int			parenthese_level;
 	int			len;
-	static char	*strings[] = {
-			"&&", "||", "|", "<<", "<", ">>", ">" };
+	static char	*strings[] = {"&&", "||", "|", "<<", "<", ">>", ">" };
 
 	i = -1;
 	while (++i < 7)
@@ -142,7 +115,7 @@ t_token	*parser(char *prompt)
 		if (prompt[0] == '(')
 			return (parser(parenthese_trim(prompt)));
 		res->type = COMMAND;
-		res->right = redir(prompt);
+		res->right = redir(prompt, -1, NULL, NULL);
 		res->argv = strdup(prompt);
 		return (res);
 	}

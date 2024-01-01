@@ -1,13 +1,5 @@
 #include "minishell.h"
 
-/* TODO: this function unset the envp copy variables as long as you have arguments
- * 		- [x] if no args return prompt and no errno
- * 		- [x] if the arg is not in envp, not an error
- * 		- [x] if an arg is invalid continue to unset for the others
- * */
-
-
-
 T_BOOL	check_unvalid(char *key)
 {
 	if (!ft_isalpha(key[0]) && key[0] != '_')

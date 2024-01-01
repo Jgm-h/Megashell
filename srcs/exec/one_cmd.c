@@ -62,7 +62,7 @@ void	child(int *pipes_here, t_token *leaf, t_pipes pipes, t_container *book)
 	ft_putstr_fd("minishell: execution failed", 2);
 }
 
-void execute(t_token *leaf, t_container *book, t_pipes pipes)
+void	execute(t_token *leaf, t_container *book, t_pipes pipes)
 {
 	int		pipes_here[2];
 
@@ -101,23 +101,12 @@ int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
 	{
 		path = find_path(book, -1, leaf->args[0]);
 		if (!path)
-		{
-			ft_putstr_fd((char *)"minishell: ", 2);
-			ft_putstr_fd(leaf->args[0], 2);
-			ft_putstr_fd((char *)": command not found\n", 2);
-			book->exit_status = 127;
-			return (ERROR);
-		}
+			return (path_error(leaf, book));
 		if (path != leaf->args[0])
 			free(leaf->args[0]);
 		leaf->args[0] = path;
 		execute(leaf, book, pipes);
 	}
-	if (pipes.in != 0)
-		close(pipes.in);
-	if (pipes.out != 1)
-		close(pipes.out);
-	if (check_builtin(leaf->args[0]) != 2)
-		book->nmbr_exec++;
+	pipes_management(pipes, book, leaf);
 	return (SUCCESS);
 }

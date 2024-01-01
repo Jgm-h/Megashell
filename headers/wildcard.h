@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEADER_H
-# define HEADER_H
+#ifndef WILDCARD_H
+# define WILDCARD_H
 
 # include <dirent.h>
 # include <unistd.h>
@@ -25,13 +25,14 @@ char	*jointo(char **join, size_t to, char glue);
 char	**strs_join(char **a, char **b, int to_free);
 char	*str_join(char *a, char *b, int to_free);
 char	**ft_split(char *str, char c);
+char	**strs_insert(char **a, char **b, int index);
 
 char	*jointo(char **join, size_t to, char glue);
 int		isdir(char *file);
 int		cmpto(char *a, char *b, char to);
 int		wildcmp(char *a, char *b, char wildchar);
-int		isdir(char *file);;
-int		free_split(char **split);
+int		isdir(char *file);
+int		free_split_degeu(char **split);
 
 void	wildcard_at_loop(char **strs, char **srcdest, DIR *d, int dironly);
 char	**wildcard_at(char *dirname, char *str, int dironly);

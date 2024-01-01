@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../../headers/wildcard.h"
 
 int	cmpto(char *a, char *b, char to)
 {

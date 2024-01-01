@@ -1,4 +1,15 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmorcom- <jmorcom-@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/27 20:22:23 by jmorcom-          #+#    #+#             */
+/*   Updated: 2024/01/01 21:06:55 by jmorcom-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+#include "minishell.h"
 
 T_BOOL	update_old_new_pwd(t_container *book)
 {
@@ -37,7 +48,7 @@ int	handle_oldpwd(t_container *book)
 	}
 	if (chdir(book->envp[index] + 7) == -1)
 	{
-		ft_putstr_fd("minishell-2.0: cd: ",2 );
+		ft_putstr_fd("minishell-2.0: cd: ", 2);
 		ft_putstr_fd(book->envp[index] + 7, 2);
 		ft_putstr_fd(": No such file or directory", 2);
 		errno = 1;

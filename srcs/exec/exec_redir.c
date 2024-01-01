@@ -31,7 +31,8 @@ T_BOOL	get_heredoc(t_token *leaf, t_container *book)
 	return (TRUE);
 }
 
-unsigned int	one_redir(t_token *leaf, char *file, t_pipes pipes, t_container *book)
+unsigned int	one_redir(t_token *leaf, char *file, \
+	t_pipes pipes, t_container *book)
 {
 	int		fd_file;
 

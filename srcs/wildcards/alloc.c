@@ -21,11 +21,11 @@ char	*jointo(char **join, size_t to, char glue)
 
 	i = -1;
 	len = 0;
-	while (join[++i] && i < to)
+	while (join[++i] && i < (int) to)
 		len += strlen(join[i]);
 	res = calloc(len + 1 + i, 1);
 	i = -1;
-	while (join[++i] && i < to)
+	while (join[++i] && i < (int) to)
 	{
 		strcat(res, join[i]);
 		if (join[i + 1] && glue)
@@ -93,7 +93,7 @@ char	*str_join(char *a, char *b, int to_free)
 	return (res);
 }
 
-char **strs_insert(char **a, char **b, int index)
+char	**strs_insert(char **a, char **b, int index)
 {
 	int		i;
 	int		j;

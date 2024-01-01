@@ -1,9 +1,10 @@
 #include "minishell.h"
 #include "parser.h"
 
-void cpy(char *a, char *b)
+void	cpy(char *a, char *b)
 {
-	while (*b) {
+	while (*b)
+	{
 		*a = *b;
 		b++;
 		a++;
@@ -36,21 +37,15 @@ t_token	*get_redir(char *prompt, int i, char *redire_type)
 	return (res);
 }
 
-t_token	*redir(char *prompt)
+t_token	*redir(char *prompt, int i, t_token *res, t_token *tmp)
 {
-	t_token 	*res;
-	t_token 	*tmp;
-	t_token 	*tmp2;
+	t_token		*tmp2;
 	int			j;
-	int			i;
-	static char	*strings[] = { "<<", ">>", ">", "<" };
+	static char	*strings[] = {"<<", ">>", ">", "<" };
 
-	res = 0;
-	i = -1;
-	tmp = 0;
 	while (prompt[++i])
 	{
-		if (prompt[i] ==  '"' || prompt[i] == '\'')
+		if (prompt[i] == '"' || prompt[i] == '\'')
 			i = skip_quotes(prompt, i);
 		j = -1;
 		while (++j < 4)
@@ -60,10 +55,12 @@ t_token	*redir(char *prompt)
 				tmp2 = get_redir(prompt, i, strings[j]);
 				if (res == 0)
 					res = tmp2;
-				if (tmp) {
+				if (tmp)
+				{
 					tmp->right = tmp2;
 					tmp = tmp2;
-				} else
+				}
+				else
 					tmp = tmp2;
 			}
 		}

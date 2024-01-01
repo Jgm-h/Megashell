@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../../headers/wildcard.h"
 
 //search for matching file 
 void	wildcard_at_loop(char **strs, char **srcdest, DIR *d, int dironly)
@@ -26,7 +26,7 @@ void	wildcard_at_loop(char **strs, char **srcdest, DIR *d, int dironly)
 	{
 		strcat(buffer, dir->d_name);
 		if (dir->d_name[0] != '.' && (!dironly || isdir(buffer))
-			&& !wildcmp(srcdest[1], dir->d_name, '*'))
+			&& !wildcmp(srcdest[1], dir->d_name, 1))
 			*(strs++) = str_join(buffer, ((char *[]){"", "/"})[dironly], 0);
 		buffer[len] = 0;
 		dir = readdir(d);
@@ -78,15 +78,14 @@ char	**wildcard_multi_dir(char *str)
 {
 	char	**split;
 	char	**res;
-	int		simple;
 	int		i;
 	char	*debut;
 
 	split = ft_split(str, '/');
 	i = -1;
-	while (split[++i] && strchr(split[i], '*') == 0)
+	while (split[++i] && strchr(split[i], 1) == 0)
 		;
-	if (split[i] == 0 && free_split(split))
+	if (split[i] == 0 && free_split_degeu(split))
 		return (str_to_strs(str));
 	if (i == 0)
 		debut = ((char *[]){"./", "/"})[str[0] == '/'];
@@ -96,7 +95,7 @@ char	**wildcard_multi_dir(char *str)
 	res = wildcard_at(debut, split[i], str[strlen(str) - 1] == '/');
 	if (split[i + 1] != 0)
 		res = wildcard_collapse(res, split, i);
-	free_split(split);
+	free_split_degeu(split);
 	free((void *)(((long long)debut) * (i != 0)));
 	return (res);
 }

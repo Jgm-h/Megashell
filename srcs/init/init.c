@@ -7,18 +7,11 @@ T_BOOL	print_error_init(char *str)
 	return (FALSE);
 }
 
-void init_nmbrs(t_container **book)
-{
-	(*book)->eof_sig = FALSE;
-	(*book)->exit_status = 0;
-	(*book)->in_pipe = FALSE;
-	(*book)->nmbr_exec = 0;
-}
-
-unsigned int init(t_container **book, char **envp, int argc)
+unsigned int	init(t_container **book, char **envp, int argc)
 {
 	if (argc != 1)
-		return (print_error_init("Usage: ./minishell {don't use any arguments}\n"));
+		return (print_error_init \
+		("Usage: ./minishell {don't use any arguments}\n"));
 	if (!isatty(0) || !isatty(1) || !isatty(2))
 		return (print_error_init("./minishell error with stream\n"));
 	(*book) = ft_calloc(1, sizeof (t_container));
@@ -31,7 +24,7 @@ unsigned int init(t_container **book, char **envp, int argc)
 		return (print_error_init("minishell: getcwd: "));
 	if (!init_envp(*book, envp) || !init_paths(*book))
 		return (1);
-	(*book)->prompt = ft_strdup("minishell-2.0$");
+	(*book)->prompt = ft_strdup("minishell-2.0$ ");
 	if (!(*book)->prompt)
 		return (print_error_init("minishell-2.0: malloc error"));
 	init_termios();

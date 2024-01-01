@@ -16,7 +16,7 @@ int	ft_strcmp_lexer(const char *s1, const char *s2)
 
 int	ft_intlen(int number)
 {
-	int size;
+	int	size;
 
 	size = 0;
 	if (number == 0)

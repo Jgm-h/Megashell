@@ -1,12 +1,11 @@
-#include <stdio.h>
 #include "minishell.h"
 #include "libft.h"
 
 volatile int	g_status = NEW_LINE;
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	t_container *book;
+	t_container	*book;
 
 	(void) argc;
 	(void) argv;

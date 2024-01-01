@@ -1,8 +1,4 @@
-# include "minishell.h"
-
-/* TODO: print envp
- * 		- [x] if more than 1 arg print "bash: envp: command not found"
- * */
+#include "minishell.h"
 
 int	env(t_token *leaf, t_container *book)
 {

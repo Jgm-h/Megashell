@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../../headers/wildcard.h"
 #include <sys/errno.h>
 
 int	isdir(char *file)
@@ -53,7 +53,7 @@ char	**ft_split(char *str, char c)
 	return (r);
 }
 
-int	free_split(char **split)
+int	free_split_degeu(char **split)
 {
 	free(split[0]);
 	free(split);

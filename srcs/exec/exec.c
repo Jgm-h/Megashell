@@ -7,13 +7,11 @@ T_BOOL	execute_pipe(t_token *leaf, t_container *book, t_pipes pipes)
 {
 	t_pipes	left;
 	t_pipes	right;
-	t_pipes _pipe;
+	t_pipes	_pipe;
 
 	left = pipes;
 	right = pipes;
-
-
-	pipe((int*) &_pipe);
+	pipe((int *)&_pipe);
 	book->in_pipe = TRUE;
 	left.out = _pipe.out;
 	right.in = _pipe.in;
@@ -23,15 +21,7 @@ T_BOOL	execute_pipe(t_token *leaf, t_container *book, t_pipes pipes)
 	return (SUCCESS);
 }
 
-void handle_exit_status(int status)
-{
-	if (WIFEXITED(status))
-		errno = WEXITSTATUS(status);
-	if (WIFSIGNALED(status))
-		errno = WTERMSIG(status);
-}
-
-T_BOOL exec_and(t_token *leaf, t_container *book, t_pipes pipes)
+T_BOOL	exec_and(t_token *leaf, t_container *book, t_pipes pipes)
 {
 	int	status;
 
@@ -56,7 +46,7 @@ T_BOOL exec_and(t_token *leaf, t_container *book, t_pipes pipes)
 	return (SUCCESS);
 }
 
-T_BOOL exec_or(t_token *leaf, t_container *book, t_pipes pipes)
+T_BOOL	exec_or(t_token *leaf, t_container *book, t_pipes pipes)
 {
 	int		status;
 	T_BOOL	ret;
@@ -105,7 +95,7 @@ T_BOOL	r_executor(t_token *leaf, t_container *book, t_pipes pipes)
 	return (ERROR);
 }
 
-void exec(t_container *book)
+void	exec(t_container *book)
 {
 	struct s_pipes	pipes;
 	int				status;
@@ -113,7 +103,8 @@ void exec(t_container *book)
 	pipes.in = STDIN_FILENO;
 	pipes.out = STDOUT_FILENO;
 	g_status = EXECUTION;
-	if (r_executor(book->head, book, pipes) == ERROR && (book->head->type == AND || book->head->type == OR))
+	if (r_executor(book->head, book, pipes) == ERROR && \
+	(book->head->type == AND || book->head->type == OR))
 		book->exit_status = errno;
 	if (book->head->type != AND && book->head->type != OR)
 	{
