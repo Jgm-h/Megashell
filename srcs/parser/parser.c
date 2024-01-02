@@ -6,7 +6,7 @@
 /*   By: albaud <albaud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 23:09:53 by albaud            #+#    #+#             */
-/*   Updated: 2024/01/01 23:50:47 by albaud           ###   ########.fr       */
+/*   Updated: 2024/01/02 01:46:32 by albaud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,18 @@ int	syntax_error(char *prompt)
 	int			parenthese_level;
 	int			len;
 	static char	*strings[] = {"&&", "||", "|", "<<", "<", ">>", ">" };
+	static int	lens[] = {2, 2, 1, 2, 1, 2, 1 };
 
 	i = -1;
 	while (++i < 7)
-	{
-		len = ft_strlen(strings[i]);
-		if (ft_strncmp(prompt, strings[i], len) == 0
-			|| ft_strncmp(&prompt[strlen(prompt) - len], strings[i], len) == 0)
+		if (ft_strncmp(prompt, strings[i], lens[i]) == 0
+			|| ft_strncmp(&prompt[strlen(prompt) - lens[i]], strings[i], lens[i]) == 0)
 			return (print_syntax_error(strings[i]));
-	}
 	i = -1;
 	parenthese_level = 0;
 	while (prompt[++i])
 	{
+		i = skip_quotes(prompt, i);
 		parenthese_level += (prompt[i] == '(') - (prompt[i] == ')');
 		if (parenthese_level < 0)
 			return (print_syntax_error(")"));
