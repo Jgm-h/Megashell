@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmorcom- <marvin@42lausanne.ch>            +#+  +:+       +#+        */
+/*   By: albaud <albaud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 23:49:30 by jmorcom-          #+#    #+#             */
-/*   Updated: 2024/01/01 23:49:31 by jmorcom-         ###   ########.fr       */
+/*   Updated: 2024/01/02 01:14:20 by albaud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	cpy(char *a, char *b)
 	*a = 0;
 }
 
-t_token	*get_redir(char *prompt, int i, char *redire_type)
+t_token	*get_redir(char *prompt, int i, char *redire_type, int redire_index)
 {
 	t_token	*res;
 	int		j;
@@ -43,7 +43,7 @@ t_token	*get_redir(char *prompt, int i, char *redire_type)
 	ret = ft_calloc(j - start + 1, sizeof (char));
 	ft_strlcpy(ret, &prompt[start], j - start + 1);
 	res = ft_calloc(1, sizeof(t_token));
-	res->type = IN_REDIR;
+	res->type = redire_index + HERDOC;
 	res->argv = ret;
 	cpy(&prompt[i], &prompt[j]);
 	return (res);
@@ -53,7 +53,7 @@ t_token	*redir(char *prompt, int i, t_token *res, t_token *tmp)
 {
 	t_token		*tmp2;
 	int			j;
-	static char	*strings[] = {"<<", ">>", ">", "<" };
+	static char	*strings[] = {"<<", ">>", "<", ">" };
 
 	while (prompt[++i])
 	{
@@ -61,9 +61,9 @@ t_token	*redir(char *prompt, int i, t_token *res, t_token *tmp)
 		j = -1;
 		while (++j < 4)
 		{
-			if (!(ft_strncmp(&prompt[i], strings[j], strlen(strings[j])) == 0))
+			if (ft_strncmp(&prompt[i], strings[j], strlen(strings[j])))
 				continue ;
-			tmp2 = get_redir(prompt, i, strings[j]);
+			tmp2 = get_redir(prompt, i, strings[j], j);
 			if (res == 0)
 				res = tmp2;
 			if (tmp)
