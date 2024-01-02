@@ -147,7 +147,7 @@ int	main(void)
 	char *line;
 	int i;
 	int fd1;
-	fd1 = open("test.txt", O_RDONLY);
+	fd1 = open("test.c.txt", O_RDONLY);
 	i = 1;
 	while (i < 10)
 	{

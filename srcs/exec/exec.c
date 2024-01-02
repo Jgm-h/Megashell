@@ -96,9 +96,6 @@ T_BOOL	r_executor(t_token *leaf, t_container *book, t_pipes pipes)
 			return (exec_and(leaf, book, pipes));
 		else if (leaf->type == OR)
 			return (exec_or(leaf, book, pipes));
-		else if (leaf->type == APD_REDIR || leaf->type == IN_REDIR \
-		|| leaf->type == OUT_REDIR || leaf->type == HERDOC)
-			return (execute_redir(leaf, book, pipes));
 		else if (leaf->type == PIPE)
 			return (execute_pipe(leaf, book, pipes));
 		else if (leaf->type == COMMAND)

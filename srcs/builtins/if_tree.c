@@ -13,9 +13,30 @@
 #include "minishell.h"
 #include "builtins.h"
 
+T_BOOL	manage_fd(t_pipes pipes, t_container *book)
+{
+	if (dup2(pipes.in, STDIN_FILENO) == -1)
+		return (FALSE);
+	if (dup2(pipes.out, STDOUT_FILENO) == -1)
+		return (FALSE);
+	if (pipes.in != 0)
+		close(pipes.in);
+	if (pipes.out != 1)
+		close(pipes.out);
+	if (book->eof_sig)
+	{
+		dup2(book->pipe_here[0], STDIN_FILENO);
+		close(book->pipe_here[0]);
+		close(book->pipe_here[1]);
+	}
+	return (TRUE);
+}
+
 T_BOOL	execute_builtins(t_token *leaf, t_container *book, t_pipes pipes)
 {
-	if (pipes.out != 1 && (!ft_strncmp(leaf->args[0], "cd", 3) \
+	if (!manage_fd(pipes, book))
+		return (ERROR);
+	if (book->in_pipe && (!ft_strncmp(leaf->args[0], "cd", 3) \
 	|| !ft_strncmp(leaf->args[0], "exit", 5) || !ft_strncmp(leaf->args[0], \
 	"export", 7) || !ft_strncmp(leaf->args[0], "unset", 6)))
 		return (SUCCESS);

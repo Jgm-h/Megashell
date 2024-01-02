@@ -55,7 +55,7 @@ t_token	*redir(char *prompt, int i, t_token *res, t_token *tmp)
 	int			j;
 	static char	*strings[] = {"<<", ">>", "<", ">" };
 
-	while (prompt[++i])
+	while (prompt[i++])
 	{
 		i = skip_quotes(prompt, i);
 		j = -1;

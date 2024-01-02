@@ -24,8 +24,8 @@ unsigned int	init(t_container **book, char **envp, int argc)
 	if (argc != 1)
 		return (print_error_init \
 		("Usage: ./minishell {don't use any arguments}\n"));
-//	if (!isatty(0) || !isatty(1) || !isatty(2))
-//		return (print_error_init("./minishell error with stream\n"));
+	if (!isatty(0) || !isatty(1) || !isatty(2))
+		return (print_error_init("./minishell error with stream\n"));
 	(*book) = ft_calloc(1, sizeof (t_container));
 	if (!(*book))
 		return (print_error_init("minishell-2.0: malloc error"));

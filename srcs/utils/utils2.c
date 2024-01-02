@@ -48,9 +48,13 @@ void	manage_heredoc(t_container *book)
 		input = readline("> ");
 		if (!input)
 			continue ;
-		if (ft_strncmp(input, book->eof, ft_strlen(book->eof) + 1))
-			continue ;
+		if (!ft_strncmp(input, book->eof, ft_strlen(book->eof) + 1))
+		{
+			free(input);
+			break ;
+		}
 		write(book->pipe_here[1], input, ft_strlen(input));
+		free(input);
 	}
 	if (g_status == HEREDOC)
 		g_status = EXECUTION;

@@ -42,7 +42,6 @@ int	syntax_error(char *prompt)
 {
 	int			i;
 	int			parenthese_level;
-	int			len;
 	static char	*strings[] = {"&&", "||", "|", "<<", "<", ">>", ">" };
 	static int	lens[] = {2, 2, 1, 2, 1, 2, 1 };
 
@@ -73,7 +72,7 @@ t_token	*parse_command(char *prompt)
 		return (parser(parenthese_trim(prompt)));
 	res = ft_calloc(1, sizeof(t_token));
 	res->type = COMMAND;
-	res->right = redir(prompt, -1, NULL, NULL);
+	res->right = redir(prompt, 0, NULL, NULL);
 	res->argv = strdup(prompt);
 	return (res);
 }

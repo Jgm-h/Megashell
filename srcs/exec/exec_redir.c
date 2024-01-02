@@ -16,7 +16,7 @@ volatile extern int	g_status;
 
 int	get_redir_fd_side(char *file, enum e_token_type type)
 {
-	int	fd;
+	int		fd;
 
 	if (type == IN_REDIR)
 	{
@@ -26,9 +26,14 @@ int	get_redir_fd_side(char *file, enum e_token_type type)
 	}
 	if (type == OUT_REDIR || type == APD_REDIR)
 	{
-		if (!my_access(file, W_OK))
-			return (-1);
-		fd = open(file, O_WRONLY);
+		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, \
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+		if (fd == -1)
+		{
+			ft_putstr_fd("minishell-2.0: permission denied: ", 2);
+			ft_putstr_fd(file, 2);
+			return (FALSE);
+		}
 	}
 	if (fd == -1)
 		ft_putstr_fd("minishell-2.0: open failed", 2);
@@ -39,7 +44,6 @@ T_BOOL	get_heredoc(t_token *leaf, t_container *book)
 {
 	book->eof = leaf->argv;
 	book->eof_sig = TRUE;
-	pipe(book->pipe_here);
 	return (TRUE);
 }
 
@@ -83,7 +87,7 @@ T_BOOL	redir_management(t_token *leaf, t_pipes pipes, t_container *book)
 
 T_BOOL	execute_redir(t_token *leaf, t_container *book, t_pipes pipes)
 {
-	if (!redir_management(leaf, pipes, book))
+	if (!redir_management(leaf->right, pipes, book))
 	{
 		book->exit_status = errno;
 		ft_putstr_fd("minishell: ", STDERR_FILENO);

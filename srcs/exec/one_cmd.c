@@ -54,21 +54,21 @@ char	*find_path(t_container *book, int i, char *arg)
 	return (NULL);
 }
 
-void	child(int *pipes_here, t_token *leaf, t_pipes pipes, t_container *book)
+void	child(t_token *leaf, t_pipes pipes, t_container *book)
 {
-	if (dup2(STDIN_FILENO, pipes.in) == -1)
+	if (dup2(pipes.in, STDIN_FILENO) == -1)
 		return ;
-	if (dup2(STDOUT_FILENO, pipes.out) == -1)
+	if (dup2(pipes.out, STDOUT_FILENO) == -1)
 		return ;
 	if (pipes.in != 0)
 		close(pipes.in);
 	if (pipes.out != 1)
 		close(pipes.out);
-	if (book->eof_sig && !pipes.in)
+	if (book->eof_sig)
 	{
-		dup2(pipes_here[0], STDIN_FILENO);
-		close(pipes_here[0]);
-		close(pipes_here[1]);
+		dup2(book->pipe_here[0], STDIN_FILENO);
+		close(book->pipe_here[0]);
+		close(book->pipe_here[1]);
 	}
 	execve(leaf->args[0], leaf->args, book->envp);
 	ft_putstr_fd("minishell: execution failed", 2);
@@ -76,23 +76,22 @@ void	child(int *pipes_here, t_token *leaf, t_pipes pipes, t_container *book)
 
 void	execute(t_token *leaf, t_container *book, t_pipes pipes)
 {
-	int		pipes_here[2];
+	int	pid;
 
 	if (book->eof_sig)
 	{
-		if (pipe(pipes_here) == -1)
+		if (pipe(book->pipe_here) == -1)
 			ft_putstr_fd("pipe", 2);
 	}
-	else if (fork1() == 0)
+	pid = fork1();
+	if (pid == 0)
 	{
-		if (book->eof_sig)
-			dup2(pipes_here[1], STDIN_FILENO);
 		if (check_builtin(leaf->args[0]))
 		{
 			execute_builtins(leaf, book, pipes);
 			exit(errno);
 		}
-		child(pipes_here, leaf, pipes, book);
+		child(leaf, pipes, book);
 	}
 	if (book->eof_sig)
 		manage_heredoc(book);
@@ -107,7 +106,7 @@ int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
 			return (FALSE);
 	if (check_builtin(leaf->args[0]) == 1)
 		execute(leaf, book, pipes);
-	else if (check_builtin(leaf->args[0]) == 2 && pipes.out == 1)
+	else if (check_builtin(leaf->args[0]) == 2 && !book->in_pipe)
 		return (execute_builtins(leaf, book, pipes));
 	else
 	{
