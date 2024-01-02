@@ -24,7 +24,7 @@ char	**str_to_strs(char *str);
 char	*jointo(char **join, size_t to, char glue);
 char	**strs_join(char **a, char **b, int to_free);
 char	*str_join(char *a, char *b, int to_free);
-char	**ft_split(char *str, char c);
+char	**ft_split_deg(char *str, char c);
 char	**strs_insert(char **a, char **b, int index);
 
 char	*jointo(char **join, size_t to, char glue);

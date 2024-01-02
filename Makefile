@@ -36,7 +36,6 @@ SRCS = ./main.c \
         ./parser_utils.c \
         ./exec_utils.c \
         ./init_utils.c \
-        ./redir_utils.c \
 		./utils2.c \
 
 

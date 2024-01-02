@@ -76,6 +76,24 @@ int	ft_small_split(char *str, char **to_copy)
 	return (i);
 }
 
+int	check_valid_split(char *input)
+{
+	char	c;
+	int		i;
+
+	i = 0;
+	if (input[i] == '"' || input[i] == '\'')
+	{
+		c = input[i];
+		i++;
+		while (input[i] && input[i] != c)
+			i++;
+	}
+	if (i == 1)
+		return (2);
+	return (0);
+}
+
 void	split_var(char *input, t_token *leaf)
 {
 	int	i;
@@ -88,6 +106,9 @@ void	split_var(char *input, t_token *leaf)
 	{
 		while (input[i] && input[i] == ' ')
 			i++;
+		i += check_valid_split(&input[i]);
+		if (!input[i])
+			break ;
 		i += ft_small_split(&input[i], &(leaf->args[j]));
 		j++;
 	}

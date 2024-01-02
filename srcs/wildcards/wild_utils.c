@@ -25,7 +25,7 @@ int	isdir(char *file)
 	return (1);
 }
 
-char	**ft_split(char *str, char c)
+char	**ft_split_deg(char *str, char c)
 {
 	char			*d;
 	char			**r;

@@ -1,9 +1,17 @@
-//
-// Created by Joshua Morcom-Harneis on 12/19/23.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmorcom- <marvin@42lausanne.ch>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/01 23:38:29 by jmorcom-          #+#    #+#             */
+/*   Updated: 2024/01/01 23:41:15 by jmorcom-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#ifndef MINISHELL_BUILTINS_H
-#define MINISHELL_BUILTINS_H
+#ifndef BUILTINS_H
+# define BUILTINS_H
 # include "minishell.h"
 
 int		pwd(void);
@@ -14,4 +22,4 @@ void	my_exit(t_token *leaf, t_container *book);
 T_BOOL	export(t_token *leaf, t_container *book);
 T_BOOL	unset(t_token *leaf, t_container *book);
 
-#endif //MINISHELL_BUILTINS_H
+#endif //BUILTINS_H

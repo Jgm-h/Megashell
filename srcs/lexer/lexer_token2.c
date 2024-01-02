@@ -77,7 +77,7 @@ unsigned int	ft_strcpy_lexer(char **input, int i, char *env, int j)
 	return (TRUE);
 }
 
-void	c_qts(char **input, T_BOOL in_double, T_BOOL in_simple, int i)
+void	c_qts(char **input, int i)
 {
 	int		j;
 	char	c;
@@ -86,8 +86,7 @@ void	c_qts(char **input, T_BOOL in_double, T_BOOL in_simple, int i)
 	{
 		if (input[0][i] == '*')
 			(*input)[i] = 1;
-		if (((*input)[i] == '\"' && !in_simple) || \
-			((*input)[i] == '\'' && !in_double))
+		if ((*input)[i] == '\"' || (*input)[i] == '\'')
 		{
 			c = (*input)[i];
 			j = i;
@@ -95,6 +94,7 @@ void	c_qts(char **input, T_BOOL in_double, T_BOOL in_simple, int i)
 			{
 				(*input)[j] = (*input)[j + 1];
 				j++;
+				i++;
 			}
 			(*input)[j] = 0;
 		}

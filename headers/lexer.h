@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmorcom- <marvin@42lausanne.ch>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/01 23:38:57 by jmorcom-          #+#    #+#             */
+/*   Updated: 2024/01/01 23:41:47 by jmorcom-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LEXER_H
-#define LEXER_H
+# define LEXER_H
 # include "minishell.h"
 
 T_BOOL			check_closed_quotes(const char *input, \
@@ -16,7 +28,7 @@ int				ft_value_expand(char *input, char **envp, int exit_status);
 int				ft_keysize(char *envp);
 int				ft_intlen(int number);
 int				ft_keysize_input(char *s1);
-void			c_qts(char **input, T_BOOL in_double, T_BOOL in_simple, int i);
+void c_qts(char **input, int i);
 T_BOOL			check_heredoc_alone(char *input, int i, T_BOOL first);
 T_BOOL			check_heredoc_start(char *input);
 char			**wildcardmoicasalpouilleudesclave(char **args, int i);

@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-<<<<<<< HEAD
 /*   By: albaud <albaud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/01 23:51:26 by albaud            #+#    #+#             */
 /*   Updated: 2024/01/01 23:52:29 by albaud           ###   ########.fr       */
-=======
-/*   By: jmorcom- <marvin@42lausanne.ch>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/01 23:48:03 by jmorcom-          #+#    #+#             */
-/*   Updated: 2024/01/01 23:48:05 by jmorcom-         ###   ########.fr       */
->>>>>>> b7894c60982057ed925bf32d5e988d80d2b7e739
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "wildcard.h"
 
 void	alloc(char *input, t_token *leaf, T_BOOL simp, T_BOOL doub)
 {
@@ -63,7 +57,13 @@ int	get_len_split(char *str)
 
 char	find_sep(char *str)
 {
-	if (*str == '"' || *str == '\'')
+	if (*str != '"' && *str != '\'')
+	{
+		while (*str && *str != ' ' && *str != '"' && *str != '\'')
+			str++;
+		return (*str);
+	}
+	else if (*str == '"' || *str == '\'')
 		return (*str);
 	else
 		return (' ');
@@ -99,11 +99,11 @@ T_BOOL	lexer_token(t_token *leaf, t_container *book)
 		{
 			if (!expand_variables(&(leaf->args[i]), book))
 				return (FALSE);
-			c_qts(&(leaf->args[i++]), 0, 0, 0);
+			c_qts(&(leaf->args[i++]), 0);
 			if (ft_strchr(leaf->args[i - 1], '*'))
 				leaf->args = prendlewildcardetwildcardmoicasalpouilleuxdesclave
 					(leaf->args, i - 1);
-			c_qts(&(leaf->argv), 0, 0, 0);
+			c_qts(&(leaf->argv), 0);
 		}
 		return (TRUE);
 	}

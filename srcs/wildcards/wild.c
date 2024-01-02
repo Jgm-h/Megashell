@@ -81,7 +81,7 @@ char	**wildcard_multi_dir(char *str)
 	int		i;
 	char	*debut;
 
-	split = ft_split(str, '/');
+	split = ft_split_deg(str, '/');
 	i = -1;
 	while (split[++i] && strchr(split[i], 1) == 0)
 		;
