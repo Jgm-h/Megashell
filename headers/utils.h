@@ -19,8 +19,8 @@ enum e_token_type{
 	OR,
 	PIPE,
 	HERDOC,
-	IN_REDIR,
 	APD_REDIR,
+	IN_REDIR,
 	OUT_REDIR,
 	COMMAND,
 };
