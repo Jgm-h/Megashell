@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "utils.h"
 #include "exec.h"
 
 char	**get_env_paths(char **envp)
@@ -71,7 +71,7 @@ void	child(t_token *leaf, t_pipes pipes, t_container *book)
 		close(book->pipe_here[1]);
 	}
 	execve(leaf->args[0], leaf->args, book->envp);
-	ft_putstr_fd("minishell: execution failed", 2);
+	ft_putstr_fd("minishell: execution failed\n", 2);
 }
 
 void	execute(t_token *leaf, t_container *book, t_pipes pipes)
@@ -100,19 +100,23 @@ void	execute(t_token *leaf, t_container *book, t_pipes pipes)
 int	exec_one_cmd(t_token *leaf, t_container *book, t_pipes pipes)
 {
 	char	*path;
+	T_BOOL	ret;
 
-	if (leaf->right)
-		if (!execute_redir(leaf, book, pipes))
-			return (FALSE);
+	if (leaf->right && !execute_redir(leaf, book, pipes))
+		return (FALSE);
 	if (check_builtin(leaf->args[0]) == 1)
 		execute(leaf, book, pipes);
 	else if (check_builtin(leaf->args[0]) == 2 && !book->in_pipe)
-		return (execute_builtins(leaf, book, pipes));
+	{
+		ret = execute_builtins(leaf, book, pipes);
+		restore_fds(book, pipes);
+		return (ret);
+	}
 	else
 	{
 		path = find_path(book, -1, leaf->args[0]);
 		if (!path)
-			return (path_error(leaf, book));
+			return (path_error(leaf));
 		if (path != leaf->args[0])
 			free(leaf->args[0]);
 		leaf->args[0] = path;

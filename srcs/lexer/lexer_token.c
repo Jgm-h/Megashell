@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "lexer.h"
 #include "wildcard.h"
 
 void	alloc(char *input, t_token *leaf, T_BOOL simp, T_BOOL doub)
@@ -99,8 +100,8 @@ T_BOOL	lexer_token(t_token *leaf, t_container *book)
 		{
 			if (!expand_variables(&(leaf->args[i]), book))
 				return (FALSE);
-			c_qts(&(leaf->args[i++]), 0);
-			if (ft_strchr(leaf->args[i - 1], '*'))
+			c_qts(&(leaf->args[i]), 0);
+			if (ft_strchr(leaf->args[i++], '*'))
 				leaf->args = prendlewildcardetwildcardmoicasalpouilleuxdesclave
 					(leaf->args, i - 1);
 			c_qts(&(leaf->argv), 0);

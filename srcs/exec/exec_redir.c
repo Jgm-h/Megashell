@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "exec.h"
 
 volatile extern int	g_status;
@@ -26,8 +27,10 @@ int	get_redir_fd_side(char *file, enum e_token_type type)
 	}
 	if (type == OUT_REDIR || type == APD_REDIR)
 	{
-		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, \
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+		if (type == OUT_REDIR)
+			fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0664);
+		else
+			fd = open(file, O_CREAT | O_WRONLY | O_APPEND, 0664);
 		if (fd == -1)
 		{
 			ft_putstr_fd("minishell-2.0: permission denied: ", 2);
@@ -42,7 +45,7 @@ int	get_redir_fd_side(char *file, enum e_token_type type)
 
 T_BOOL	get_heredoc(t_token *leaf, t_container *book)
 {
-	book->eof = leaf->argv;
+	book->eof = ft_strdup(leaf->argv);
 	book->eof_sig = TRUE;
 	return (TRUE);
 }

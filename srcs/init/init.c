@@ -13,35 +13,32 @@
 #include "minishell.h"
 #include "init.h"
 
-T_BOOL	print_error_init(char *str)
+void	*print_error_init(char *str)
 {
 	ft_putstr_fd(str, 2);
-	return (FALSE);
+	return (NULL);
 }
 
-unsigned int	init(t_container **book, char **envp, int argc)
+t_container	*init(t_container *book, char **envp, int argc)
 {
+	book = ft_calloc(1, sizeof (t_container));
 	if (argc != 1)
 		return (print_error_init \
 		("Usage: ./minishell {don't use any arguments}\n"));
 	if (!isatty(0) || !isatty(1) || !isatty(2))
 		return (print_error_init("./minishell error with stream\n"));
-	(*book) = ft_calloc(1, sizeof (t_container));
-	if (!(*book))
-		return (print_error_init("minishell-2.0: malloc error"));
-	(*book)->exit_status = 0;
-	(*book)->prompt = "minishell-2.0$";
-	(*book)->cwd = getcwd(NULL, 0);
-	if (!(*book)->cwd)
+	book->exit_status = 0;
+	book->cwd = getcwd(NULL, 0);
+	if (!book->cwd)
 		return (print_error_init("minishell: getcwd: "));
-	if (!init_envp(*book, envp) || !init_paths(*book))
-		return (1);
-	(*book)->prompt = ft_strdup("minishell-2.0$ ");
-	if (!(*book)->prompt)
+	if (!init_envp(book, envp) || !init_paths(book))
+		return (FALSE);
+	book->prompt = ft_strdup("minishell-2.0$ ");
+	if (!book->prompt)
 		return (print_error_init("minishell-2.0: malloc error"));
 	init_termios();
 	init_nmbrs(book);
-	return (1);
+	return (book);
 }
 
 void	init_termios(void)
@@ -74,7 +71,7 @@ unsigned int	init_paths(t_container *book)
 	i = 0;
 	while (book->paths[i])
 	{
-		book->paths[i] = ft_strjoin(ft_strdup(book->paths[i]), ft_strdup("/"));
+		book->paths[i] = ft_strjoin(book->paths[i], ft_strdup("/"));
 		i++;
 	}
 	return (TRUE);

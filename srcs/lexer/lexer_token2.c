@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "lexer.h"
 
 unsigned int	expand(char **input, t_container *book, int i)
 {
@@ -37,8 +38,6 @@ unsigned int	ft_expand_exit(char **input, int i, t_container *book)
 
 	j = 0;
 	exit_status = ft_itoa(book->exit_status);
-	if (!exit_status)
-		return (FALSE);
 	reste = ft_strdup(&(*input)[i + 2]);
 	debut = ft_calloc(i + 1, sizeof(char));
 	while (j < i)

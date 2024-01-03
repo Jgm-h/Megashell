@@ -13,18 +13,6 @@
 #include "minishell.h"
 #include "lexer.h"
 
-T_BOOL	check_empty_prompt(char *input)
-{
-	int	i;
-
-	i = 0;
-	while (input[i] && input[i] == ' ')
-		i++;
-	if (!input[i])
-		return (FALSE);
-	return (TRUE);
-}
-
 T_BOOL	expand_variables(char **input, t_container *book)
 {
 	int	i;
@@ -36,8 +24,7 @@ T_BOOL	expand_variables(char **input, t_container *book)
 		if (check_state((*input), i, FALSE, \
 				FALSE) && check_expand((*input), i, book))
 		{
-			tmp = ft_value_expand(&(*input)[i + 1], \
-				book->envp, book->exit_status);
+			tmp = ft_value_expand(&(*input)[i + 1], book->envp);
 			if (!expand(input, book, i))
 				return (FALSE);
 			i += tmp;

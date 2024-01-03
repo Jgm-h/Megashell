@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "utils.h"
 #include "builtins.h"
 
 T_BOOL	echo(t_token *leaf, t_pipes pipes)

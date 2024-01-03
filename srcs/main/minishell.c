@@ -21,10 +21,13 @@ void	input_handling(t_container *book, char **input)
 	add_history(*input);
 }
 
-int	minishell(t_container *book)
+int	minishell(t_container *book, char **envp, int argc)
 {
 	char	*input;
 
+	book = init(book, envp, argc);
+	if (!book)
+		exit (1);
 	while (book)
 	{
 		g_status = NEW_LINE;

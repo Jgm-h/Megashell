@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "utils.h"
 #include "lexer.h"
 
 T_BOOL	check_closed_quotes(const char *input, int in_single, int in_double)
@@ -87,4 +87,19 @@ T_BOOL	check_expand(char *input, int i, t_container *book)
 		return (TRUE);
 	}
 	return (FALSE);
+}
+
+int	ft_value_expand(char *input, char **envp)
+{
+	int	j;
+
+	j = 0;
+	if (input[0] == '?')
+		return (ft_intlen(errno));
+	while (envp[++j])
+	{
+		if (!ft_strcmp_lexer(input, envp[j]))
+			return (ft_strlen(envp[j] + 4));
+	}
+	return (0);
 }

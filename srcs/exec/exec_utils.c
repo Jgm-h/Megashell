@@ -21,14 +21,15 @@ void	pipes_management(t_pipes pipes, t_container *book, t_token *leaf)
 		close(pipes.out);
 	if (check_builtin(leaf->args[0]) != 2)
 		book->nmbr_exec++;
+	restore_fds(book, pipes);
 }
 
-T_BOOL	path_error(t_token *leaf, t_container *book)
+T_BOOL	path_error(t_token *leaf)
 {
 	ft_putstr_fd((char *)"minishell: ", 2);
 	ft_putstr_fd(leaf->args[0], 2);
 	ft_putstr_fd((char *)": command not found\n", 2);
-	book->exit_status = 127;
+	errno = 127;
 	return (ERROR);
 }
 

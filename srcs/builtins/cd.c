@@ -9,7 +9,7 @@
 /*   Updated: 2024/01/01 21:06:55 by jmorcom-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+#include "utils.h"
 
 T_BOOL	update_old_new_pwd(t_container *book)
 {
@@ -56,7 +56,6 @@ int	handle_oldpwd(t_container *book)
 	}
 	if (!update_old_new_pwd(book))
 		return (ERROR);
-	printf("%s", book->cwd);
 	return (SUCCESS);
 }
 

@@ -109,6 +109,8 @@ void	exec(t_container *book)
 	struct s_pipes	pipes;
 	int				status;
 
+	book->o_fdout = dup(STDOUT_FILENO);
+	book->o_fdin = dup(STDIN_FILENO);
 	pipes.in = STDIN_FILENO;
 	pipes.out = STDOUT_FILENO;
 	g_status = EXECUTION;

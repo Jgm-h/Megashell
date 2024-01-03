@@ -12,7 +12,19 @@
 
 #ifndef UTILS_H
 # define UTILS_H
-# include "minishell.h"
+# define T_BOOL unsigned int
+# define TRUE 1
+# define FALSE 0
+# define SUCCESS 0
+# define ERROR 1
+# include "stdio.h"
+# include <errno.h>
+# include "signal.h"
+# include <fcntl.h>
+# include <termios.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "libft.h"
 
 enum e_token_type{
 	AND,
@@ -48,17 +60,19 @@ typedef struct s_token
 }	t_token;
 
 typedef struct s_container{
+	T_BOOL	eof_sig;
+	int		o_fdin;
+	int		o_fdout;
+	int		exit_status;
+	T_BOOL	in_pipe;
+	int		nmbr_exec;
+	char	*eof;
+	int		*pipe_here;
 	t_token	*head;
 	char	**envp;
 	char	**paths;
 	char	*prompt;
 	char	*cwd;
-	char	*eof;
-	T_BOOL	eof_sig;
-	int		*pipe_here;
-	int		exit_status;
-	T_BOOL	in_pipe;
-	int		nmbr_exec;
 }t_container;
 
 int		get_index_env(char **envp, char *key);
@@ -67,11 +81,17 @@ void	free_split(char **to_free);
 int		fork1(void);
 void	manage_heredoc(t_container *book);
 int		my_dup2(int fd_file, int to_dup);
+void	restore_fds(t_container *book, t_pipes pipe);
 T_BOOL	my_access(char *file, int flag);
 void	export_value(char **env, char *key, char *value);
 
 int		check_builtin(char *str);
 void	free_array(char **array);
 void	free_leaf(t_token *leaf);
+T_BOOL	check_empty_prompt(char *input);
+T_BOOL	execute_builtins(t_token *leaf, \
+				t_container *book, t_pipes pipes);
+void	free_all(t_container *book);
+void	write_heredoc(t_container *book, char *input, char *to_send);
 
 #endif //UTILS_H

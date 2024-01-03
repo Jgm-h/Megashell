@@ -16,8 +16,10 @@ void	free_leaf(t_token *leaf)
 {
 	if (!leaf)
 		return ;
-	free_leaf(leaf->left);
-	free_leaf(leaf->right);
+	if (leaf->left)
+		free_leaf(leaf->left);
+	if (leaf->right)
+		free_leaf(leaf->right);
 	if (leaf->args)
 		free_array(leaf->args);
 	if (leaf->argv)

@@ -60,18 +60,3 @@ int	ft_keysize(char *envp)
 		i++;
 	return (i + 1);
 }
-
-int	ft_value_expand(char *input, char **envp, int exit_status)
-{
-	int	j;
-
-	j = 0;
-	if (input[0] == '?')
-		return (ft_intlen(exit_status));
-	while (envp[++j])
-	{
-		if (!ft_strcmp_lexer(input, envp[j]))
-			return (ft_strlen(envp[j] + 4));
-	}
-	return (0);
-}

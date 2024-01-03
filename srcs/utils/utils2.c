@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "utils.h"
 
 volatile extern int	g_status;
 
@@ -39,23 +39,11 @@ int	fork1(void)
 void	manage_heredoc(t_container *book)
 {
 	char	*input;
+	char	*to_send;
 
-	if (!book->eof_sig)
-		return ;
+	to_send = NULL;
 	g_status = HEREDOC;
-	while (g_status == HEREDOC)
-	{
-		input = readline("> ");
-		if (!input)
-			continue ;
-		if (!ft_strncmp(input, book->eof, ft_strlen(book->eof) + 1))
-		{
-			free(input);
-			break ;
-		}
-		write(book->pipe_here[1], input, ft_strlen(input));
-		free(input);
-	}
+	write_heredoc(book, input, to_send);
 	if (g_status == HEREDOC)
 		g_status = EXECUTION;
 	if (g_status == ABORT_HEREDOC)

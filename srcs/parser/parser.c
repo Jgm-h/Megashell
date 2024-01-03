@@ -43,12 +43,13 @@ int	syntax_error(char *prompt)
 	int			i;
 	int			parenthese_level;
 	static char	*strings[] = {"&&", "||", "|", "<<", "<", ">>", ">" };
-	static int	lens[] = {2, 2, 1, 2, 1, 2, 1 };
+	static int	lens[] = {2, 2, 1, 2, 1, 2, 1};
 
 	i = -1;
 	while (++i < 7)
 		if (ft_strncmp(prompt, strings[i], lens[i]) == 0
-			|| ft_strncmp(&prompt[strlen(prompt) - lens[i]], strings[i], lens[i]) == 0)
+			|| ft_strncmp(&prompt[strlen(prompt) - lens[i]], \
+			strings[i], lens[i]) == 0)
 			return (print_syntax_error(strings[i]));
 	i = -1;
 	parenthese_level = 0;

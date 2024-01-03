@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "utils.h"
 #include "builtins.h"
 
 T_BOOL	manage_fd(t_pipes pipes, t_container *book)

@@ -37,6 +37,7 @@ SRCS = ./main.c \
         ./exec_utils.c \
         ./init_utils.c \
 		./utils2.c \
+		./utils3.c \
 
 
 OBJS_DIR = ./objs

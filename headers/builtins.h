@@ -12,7 +12,6 @@
 
 #ifndef BUILTINS_H
 # define BUILTINS_H
-# include "minishell.h"
 
 int		pwd(void);
 T_BOOL	echo(t_token *leaf, t_pipes pipes);
